@@ -10,6 +10,10 @@
 
 Powered by the incredible [scrcpy](https://github.com/Genymobile/scrcpy), Xync provides a beautiful, native macOS interface for managing your Android devices without touching a terminal.
 
+<br>
+<img src="assets/previews/preview.png" alt="Xync App Preview" width="800">
+<br>
+
 </div>
 
 ## Features
