@@ -16,6 +16,7 @@ struct ContentView: View {
     
     @State private var devices: [Device] = []
     @State private var showWizard = false
+    @StateObject private var updateManager = UpdateManager()
     
     // Subscribe to ShellManager update
     @ObservedObject var shell = ShellManager.shared
@@ -123,9 +124,18 @@ struct ContentView: View {
         // Sheet removed
         .onAppear {
             refreshDevices()
+            updateManager.checkForUpdates()
         }
         .onReceive(timer) { _ in
             refreshDevices()
+        }
+        .alert("Update Available 🚀", isPresented: $updateManager.showUpdateAlert) {
+            Button("Download Update", role: .cancel) {
+                updateManager.openUpdate()
+            }
+            Button("Later") { }
+        } message: {
+            Text("Version \(updateManager.updateVersion) of Xync is now available! Would you like to download it now?")
         }
     }
     
