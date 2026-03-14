@@ -80,3 +80,7 @@ iOSInjectionProject/
 
 # Mac OS files
 .DS_Store
+
+# Build artifacts
+*.app
+*.dmg

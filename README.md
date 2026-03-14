@@ -52,13 +52,14 @@ To generate a `.dmg` file to share with the world:
 1. In Xcode, change your build target to **Any Mac (Apple Silicon, Intel)**.
 2. From the Top Menu, choose **Product -> Archive**.
 3. Once archived, click **Distribute App** -> **Custom** -> **Copy App**.
-4. Save the `Xync.app` bundle into your `xync` project folder (right next to `create_dmg.sh`).
-5. Open your terminal, navigate to the `xync` folder, and run:
+4. Save the `Xync.app` bundle into your `xync` project folder.
+5. Open your terminal, navigate to the `xync` folder, and type:
    ```bash
-   ./create_dmg.sh
+   brew install create-dmg
+   
+   create-dmg --volname "Xync Installer" --window-pos 200 120 --window-size 600 400 --icon-size 100 --icon "Xync.app" 150 190 --hide-extension "Xync.app" --app-drop-link 450 190 "Xync.dmg" "Xync.app/"
    ```
-   *(This will automatically download the `create-dmg` tool if you don't have it, and build a beautiful macOS drag-and-drop installer called `Xync.dmg`)*
-6. Upload `Xync.dmg` to your GitHub Releases!
+6. Upload the generated `Xync.dmg` to your GitHub Releases!
 
 ---
 
