@@ -9,12 +9,16 @@
 **Mirror, control, and manage your Android devices wirelessly from your Mac.**
 
 Powered by the incredible [scrcpy](https://github.com/Genymobile/scrcpy), Xync provides a beautiful, native macOS interface for managing your Android devices without touching a terminal.
-
-<br>
-<img src="assets/previews/preview.png" alt="Xync App Preview" width="800">
-<br>
-
 </div>
+
+## Wireless Devices
+<img src="assets/previews/wireless-devices-preview.png" alt="Xync App Preview" width="800">
+
+## Wired Devices
+<img src="assets/previews/wired-devices-preview.png" alt="Xync App Preview" width="800">
+
+## Samsung DeX
+<img src="assets/previews/samsung-dex-preview.png" alt="Xync App Preview" width="800">
 
 ## Features
 - **Wireless Mirroring**: Connect and mirror your phone over Wi-Fi with zero cable clutter. Built-in Connection Wizard makes TCP/IP setup a breeze.
