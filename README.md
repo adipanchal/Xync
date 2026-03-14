@@ -49,6 +49,6 @@ If you prefer to compile Xync yourself:
 
 ---
 
-**Made with ❤️ by [Aditya Panchal (@adipanchal)](https://github.com/adipanchal)**
+**Made by [Aditya Panchal](https://github.com/adipanchal)**
 
 *Copyright © 2026 Aditya Panchal. All rights reserved.*
