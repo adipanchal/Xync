@@ -65,6 +65,25 @@ struct DeviceRow: View {
                     
                     Divider().frame(height: 20)
                     
+                    // Quick Share
+                    Button(action: { sendClipboardText() }) {
+                        Image(systemName: "doc.on.clipboard")
+                            .font(.system(size: 16))
+                            .foregroundColor(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .help("Paste Mac Clipboard to Phone")
+                    
+                    Button(action: { quickPushFile() }) {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 16))
+                            .foregroundColor(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .help("Send File to Phone (Downloads)")
+                    
+                    Divider().frame(height: 20)
+                    
                     if isMirroring {
                         Text("Mirroring")
                             .font(.caption)
@@ -126,6 +145,28 @@ struct DeviceRow: View {
                 onForget()
             } label: {
                 Label("Forget Device", systemImage: "trash")
+            }
+        }
+    }
+    
+    // MARK: - Quick Share Actions
+    
+    private func sendClipboardText() {
+        if let string = NSPasteboard.general.string(forType: .string) {
+            ShellManager.shared.sendText(serial: device.serial, text: string)
+        }
+    }
+    
+    private func quickPushFile() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.prompt = "Send to Phone"
+        
+        if panel.runModal() == .OK, let url = panel.url {
+            let fileName = url.lastPathComponent
+            DispatchQueue.global().async {
+                _ = ShellManager.shared.pushFile(serial: device.serial, localPath: url.path, remotePath: "/sdcard/Download/\(fileName)")
             }
         }
     }

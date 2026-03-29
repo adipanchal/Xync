@@ -11,12 +11,14 @@ enum SidebarTab: CaseIterable {
     case wireless
     case wired
     case dex
+    case files
     
     var rawValue: String {
         switch self {
         case .wireless: return "Wireless"
         case .wired: return "Wired Mirror"
         case .dex: return "Samsung DeX"
+        case .files: return "File Explorer"
         }
     }
     
@@ -25,6 +27,7 @@ enum SidebarTab: CaseIterable {
         case .wireless: return "wifi"
         case .wired: return "cable.connector"
         case .dex: return "desktopcomputer"
+        case .files: return "folder"
         }
     }
 }
@@ -48,6 +51,16 @@ struct SidebarView: View {
                         Text(tab.rawValue)
                             .font(.title3)
                             .foregroundColor(selection == tab ? .blue : .primary)
+                        
+                        if tab == .files {
+                            Text("BETA")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 5)
+                                .padding(.vertical, 2)
+                                .background(Color.orange)
+                                .clipShape(Capsule())
+                        }
                         
                         Spacer()
                     }

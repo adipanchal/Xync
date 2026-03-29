@@ -16,6 +16,7 @@ struct ContentView: View {
     
     @State private var devices: [Device] = []
     @State private var showWizard = false
+    @State private var selectedFileDevice: Device? = nil
     @StateObject private var updateManager = UpdateManager()
     
     // Subscribe to ShellManager update
@@ -32,7 +33,18 @@ struct ContentView: View {
             .navigationSplitViewColumnWidth(min: 200, ideal: 250)
         } detail: {
             VStack(spacing: 0) {
-                // Filtered Device List
+                if let device = selectedFileDevice, selectedTab == .files {
+                    FileManagerView(device: device)
+                        .navigationSubtitle(device.displayName)
+                        .toolbar {
+                            ToolbarItem(placement: .navigation) {
+                                Button(action: { selectedFileDevice = nil }) {
+                                    Label("Back", systemImage: "chevron.left")
+                                }
+                            }
+                        }
+                } else {
+                    // Filtered Device List
                 if filteredDevices.isEmpty {
                     Spacer()
                     VStack(spacing: 15) {
@@ -62,6 +74,24 @@ struct ContentView: View {
                                 },
                                 isMirroring: shell.activeScrcpySessions[device.serial] == true
                             )
+                        } else if selectedTab == .files {
+                            Button {
+                                selectedFileDevice = device
+                            } label: {
+                                HStack {
+                                    Image(systemName: device.isWireless ? "wifi" : "cable.connector")
+                                        .foregroundColor(device.isWireless ? .green : .blue)
+                                    VStack(alignment: .leading) {
+                                        Text(device.displayName).font(.title3).fontWeight(.semibold)
+                                        Text(device.serial).font(.caption).foregroundColor(.secondary).monospaced()
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right").foregroundColor(.secondary)
+                                }
+                                .padding(.vertical, 8)
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
                         } else {
                             DeviceRow(
                                 device: device,
@@ -86,29 +116,47 @@ struct ContentView: View {
                         }
                     }
                     .listStyle(.inset)
+                    .id(selectedTab)
+                    
+                    if selectedTab == .files {
+                        HStack(spacing: 6) {
+                            Image(systemName: "lightbulb.fill")
+                                .foregroundColor(.yellow)
+                                .font(.system(size: 11))
+                            Text("Keep your phone screen on while using File Explorer for a stable connection.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 20)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    }
                 }
             }
+        }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .toolbar {
-                ToolbarItem(placement: .navigation) {
-                    Text(headerTitle)
-                        .font(.headline)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 4)
-                }
-                
-                ToolbarItemGroup(placement: .primaryAction) {
-                    if selectedTab == .wireless {
-                        Button(action: { showWizard = true }) {
-                            Label("Add Device", systemImage: "plus")
-                        }
-                        .help("Add New Device")
+                if selectedFileDevice == nil {
+                    ToolbarItem(placement: .navigation) {
+                        Text(headerTitle)
+                            .font(.headline)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 4)
                     }
                     
-                    Button(action: { refreshDevices() }) {
-                        Label("Refresh", systemImage: "arrow.clockwise")
+                    ToolbarItemGroup(placement: .primaryAction) {
+                        if selectedTab == .wireless {
+                            Button(action: { showWizard = true }) {
+                                Label("Add Device", systemImage: "plus")
+                            }
+                            .help("Add New Device")
+                        }
+                        
+                        Button(action: { refreshDevices() }) {
+                            Label("Refresh", systemImage: "arrow.clockwise")
+                        }
+                        .help("Refresh Devices")
                     }
-                    .help("Refresh Devices")
                 }
             }
             .sheet(isPresented: $showWizard) {
@@ -120,6 +168,9 @@ struct ContentView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .background(Color(nsColor: .windowBackgroundColor))
+        }
+        .onChange(of: selectedTab) { _ in
+            selectedFileDevice = nil
         }
         // Sheet removed
         .onAppear {
@@ -146,6 +197,7 @@ struct ContentView: View {
         case .wireless: return "Wireless Devices"
         case .wired: return "Wired Devices"
         case .dex: return "Samsung DeX"
+        case .files: return "File Explorer"
         }
     }
     
@@ -154,6 +206,7 @@ struct ContentView: View {
         case .wireless: return devices.filter { $0.isWireless }
         case .wired: return devices.filter { !$0.isWireless }
         case .dex: return devices // Show all for DeX
+        case .files: return devices
         }
     }
     

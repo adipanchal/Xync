@@ -62,6 +62,17 @@ class ShellManager: ObservableObject {
         print("🗑️ Forgot device: \(serial)")
     }
     
+    // Manage device power state
+    func setStayAwake(serial: String, enable: Bool) {
+        let state = enable ? "true" : "false"
+        let _ = run("'\(adbPath)' -s \(serial) shell svc power stayon \(state)")
+        if enable {
+            // Also explicitly wake up the device if it's currently asleep
+            let _ = run("'\(adbPath)' -s \(serial) shell input keyevent KEYCODE_WAKEUP")
+        }
+        print("💡 Set stay awake for \(serial) to \(state)")
+    }
+    
     private func getKnownDevicesDict() -> [String: String] {
         return UserDefaults.standard.dictionary(forKey: knownDevicesKey) as? [String: String] ?? [:]
     }
@@ -371,5 +382,108 @@ class ShellManager: ObservableObject {
         } catch {
             print("Failed to launch tracked command: \(error)")
         }
+    }
+    
+    // MARK: - File Management & Quick Share
+    
+    func listDirectory(serial: String, path: String) -> [FileItem] {
+        // Run ls -lA to get detailed listing
+        let cmd = "'\(adbPath)' -s \(serial) shell ls -lA \"\(path)\""
+        let output = run(cmd)
+        
+        var items: [FileItem] = []
+        let lines = output.components(separatedBy: .newlines)
+        
+        for line in lines {
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.isEmpty || trimmed.hasPrefix("total") { continue }
+            
+            // Typical line: drwxrwx--- 2 root everybody 4096 2026-03-24 10:20 Download
+            let components = trimmed.split(separator: " ", maxSplits: 7, omittingEmptySubsequences: true)
+            if components.count >= 8 {
+                let permissions = String(components[0])
+                let isDir = permissions.hasPrefix("d") || permissions.hasPrefix("l") // treat symlinks as dirs usually
+                let size = String(components[4])
+                let date = "\(components[5]) \(components[6])"
+                let name = String(components[7])
+                
+                // Skip absolute current dir and parent markers if any
+                if name == "." || name == ".." { continue }
+                
+                let fullPath = path.hasSuffix("/") ? "\(path)\(name)" : "\(path)/\(name)"
+                
+                items.append(FileItem(name: name, path: fullPath, isDirectory: isDir, size: size, date: date, permissions: permissions))
+            }
+        }
+        
+        // Sort directories first, then alphabetical
+        return items.sorted {
+            if $0.isDirectory == $1.isDirectory {
+                return $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+            }
+            return $0.isDirectory && !$1.isDirectory
+        }
+    }
+    
+    func pushFile(serial: String, localPath: String, remotePath: String) -> Bool {
+        let cmd = "'\(adbPath)' -s \(serial) push \"\(localPath)\" \"\(remotePath)\""
+        let output = run(cmd)
+        return !output.lowercased().contains("error:")
+    }
+    
+    func pullFile(serial: String, remotePath: String, localPath: String) -> Bool {
+        let cmd = "'\(adbPath)' -s \(serial) pull \"\(remotePath)\" \"\(localPath)\""
+        let output = run(cmd)
+        return !output.lowercased().contains("error:")
+    }
+    
+    func deleteFile(serial: String, remotePath: String) -> Bool {
+        let cmd = "'\(adbPath)' -s \(serial) shell rm -rf \"\(remotePath)\""
+        let output = run(cmd)
+        return !output.contains("rm: ") && !output.contains("No such file")
+    }
+    
+    func createDirectory(serial: String, remotePath: String) -> Bool {
+        let cmd = "'\(adbPath)' -s \(serial) shell mkdir -p \"\(remotePath)\""
+        let output = run(cmd)
+        return !output.contains("mkdir: ")
+    }
+    
+    func sendText(serial: String, text: String) {
+        // We replace spaces magically as %s because adb shell input text handles spaces weirdly sometimes
+        let escaped = text.replacingOccurrences(of: "\"", with: "\\\"").replacingOccurrences(of: " ", with: "%s")
+        let cmd = "'\(adbPath)' -s \(serial) shell input text \"\(escaped)\""
+        runAsync(cmd)
+    }
+    
+    func copyOrMoveFiles(serial: String, sourcePaths: [String], targetDir: String, isMove: Bool) -> Bool {
+        let op = isMove ? "mv" : "cp -r"
+        let paths = sourcePaths.map { "\"\($0)\"" }.joined(separator: " ")
+        let cmd = "'\(adbPath)' -s \(serial) shell \(op) \(paths) \"\(targetDir)/\""
+        let output = run(cmd)
+        return !output.contains("No such file") && !output.contains("cannot")
+    }
+    
+    func duplicateFile(serial: String, path: String) -> Bool {
+        var name = path.components(separatedBy: "/").last ?? ""
+        if name.isEmpty { return false }
+        var dir = path.components(separatedBy: "/").dropLast().joined(separator: "/")
+        if dir.isEmpty { dir = "/" }
+        
+        let newName = "\(name) copy"
+        let newPath = dir.hasSuffix("/") ? "\(dir)\(newName)" : "\(dir)/\(newName)"
+        let cmd = "'\(adbPath)' -s \(serial) shell cp -r \"\(path)\" \"\(newPath)\""
+        let output = run(cmd)
+        return !output.contains("No such file") && !output.contains("cannot")
+    }
+    
+    func renameFile(serial: String, oldPath: String, newName: String) -> Bool {
+        var dir = oldPath.components(separatedBy: "/").dropLast().joined(separator: "/")
+        if dir.isEmpty { dir = "/" }
+        
+        let newPath = dir.hasSuffix("/") ? "\(dir)\(newName)" : "\(dir)/\(newName)"
+        let cmd = "'\(adbPath)' -s \(serial) shell mv \"\(oldPath)\" \"\(newPath)\""
+        let output = run(cmd)
+        return !output.contains("No such file") && !output.contains("cannot")
     }
 }
