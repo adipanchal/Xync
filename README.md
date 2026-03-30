@@ -18,6 +18,9 @@ Powered by the incredible [scrcpy](https://github.com/Genymobile/scrcpy), Xync p
 <img src="assets/previews/wired-devices-preview.png" alt="Xync App Preview" width="800">
 
 ## Samsung DeX
+<div>
+  Maynot work on every samsung devices try at your own luck!
+</div>
 <img src="assets/previews/samsung-dex-preview.png" alt="Xync App Preview" width="800">
 
 ## File Explorer (Beta)
