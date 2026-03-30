@@ -20,6 +20,9 @@ Powered by the incredible [scrcpy](https://github.com/Genymobile/scrcpy), Xync p
 ## Samsung DeX
 <img src="assets/previews/samsung-dex-preview.png" alt="Xync App Preview" width="800">
 
+## File Explorer (Beta)
+<img src="assets/previews/file-explorer-preview.png" alt="Xync App Preview" width="800">
+
 ## Features
 - **Wireless Mirroring**: Connect and mirror your phone over Wi-Fi with zero cable clutter. Built-in Connection Wizard makes TCP/IP setup a breeze.
 - **Wired Mirroring**: Low-latency, high-performance USB mirroring for gaming or intensive tasks.
