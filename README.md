@@ -30,6 +30,7 @@ Powered by the incredible [scrcpy](https://github.com/Genymobile/scrcpy), Xync p
 - **Camera Passthrough**: Use your Android phone's high-quality rear or front camera directly on your Mac.
 - **Device Management**: Forget, disconnect, or connect saved devices easily with a click.
 - **Native macOS UI**: Built entirely in Swift/SwiftUI with macOS design paradigms (translucency, SF Symbols, native window handling).
+- **File Explorer**: Browse your Android device files directly from your Mac.
 
 ## Prerequisites
 
