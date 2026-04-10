@@ -42,6 +42,10 @@ struct xyncApp: App {
             }
         }
         
+        Settings {
+            SettingsView()
+        }
+        
         Window("About Xync", id: "about") {
             AboutView()
         }

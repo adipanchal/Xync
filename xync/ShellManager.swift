@@ -37,14 +37,22 @@ class ShellManager: ObservableObject {
     }
     
     private let knownDevicesKey = "KnownWirelessDevices"
+    private let knownDeviceNamesKey = "KnownDeviceNames"
     
     // Save a successful wireless connection
-    func saveKnownDevice(serial: String, model: String) {
+    func saveKnownDevice(serial: String, model: String, marketName: String = "") {
         guard serial.contains(":") || serial.contains(".") else { return } // Only save wireless
         
         var known = getKnownDevicesDict()
         known[serial] = model
         UserDefaults.standard.set(known, forKey: knownDevicesKey)
+        
+        // Also save the market name
+        if !marketName.isEmpty {
+            var names = getKnownDeviceNamesDict()
+            names[serial] = marketName
+            UserDefaults.standard.set(names, forKey: knownDeviceNamesKey)
+        }
     }
     
     func forgetDevice(serial: String) {
@@ -58,6 +66,11 @@ class ShellManager: ObservableObject {
         var known = getKnownDevicesDict()
         known.removeValue(forKey: serial)
         UserDefaults.standard.set(known, forKey: knownDevicesKey)
+        
+        // Remove saved name
+        var names = getKnownDeviceNamesDict()
+        names.removeValue(forKey: serial)
+        UserDefaults.standard.set(names, forKey: knownDeviceNamesKey)
         
         print("🗑️ Forgot device: \(serial)")
     }
@@ -75,6 +88,51 @@ class ShellManager: ObservableObject {
     
     private func getKnownDevicesDict() -> [String: String] {
         return UserDefaults.standard.dictionary(forKey: knownDevicesKey) as? [String: String] ?? [:]
+    }
+    
+    private func getKnownDeviceNamesDict() -> [String: String] {
+        return UserDefaults.standard.dictionary(forKey: knownDeviceNamesKey) as? [String: String] ?? [:]
+    }
+    
+    // MARK: - Device Name Resolution
+    
+    func getDeviceName(serial: String) -> String {
+        // Try multiple properties to find the best marketing name
+        let props = [
+            "ro.product.marketname",        // Samsung: "Galaxy M34 5G"
+            "ro.product.vendor.marketname",  // Some vendors
+            "ro.config.marketing_name",      // Xiaomi/OnePlus
+            "ro.product.brand.marketname",   // Fallback
+        ]
+        
+        for prop in props {
+            let result = run("'\(adbPath)' -s \(serial) shell getprop \(prop)").trimmingCharacters(in: .whitespacesAndNewlines)
+            if isValidDeviceName(result) {
+                return result
+            }
+        }
+        
+        // Fallback: try user-set device name
+        let deviceName = run("'\(adbPath)' -s \(serial) shell settings get global device_name").trimmingCharacters(in: .whitespacesAndNewlines)
+        if isValidDeviceName(deviceName) && deviceName != "null" {
+            return deviceName
+        }
+        
+        return ""
+    }
+    
+    private func isValidDeviceName(_ name: String) -> Bool {
+        guard !name.isEmpty else { return false }
+        // Filter out ADB error messages
+        let invalidPrefixes = ["adb:", "error:", "Exception", "Warning", "*"]
+        for prefix in invalidPrefixes {
+            if name.hasPrefix(prefix) { return false }
+        }
+        let invalidKeywords = ["error", "offline", "unauthorized", "not found", "cannot", "failed", "daemon"]
+        for keyword in invalidKeywords {
+            if name.lowercased().contains(keyword) { return false }
+        }
+        return true
     }
 
     func listDevices() -> [Device] {
@@ -124,24 +182,31 @@ class ShellManager: ObservableObject {
                     model = modelPart.replacingOccurrences(of: "model:", with: "")
                 }
                 
-                let device = Device(id: serial, serial: serial, state: state, model: model)
+                // Fetch friendly marketing name for connected devices
+                var marketName = ""
+                if state == "device" {
+                    marketName = getDeviceName(serial: serial)
+                }
+                
+                let device = Device(id: serial, serial: serial, state: state, model: model, marketName: marketName)
                 currentDevices.append(device)
                 foundSerials.insert(serial)
                 
                 // Save if it's wireless and active
                 if device.isWireless && state == "device" {
-                    saveKnownDevice(serial: serial, model: model)
+                    saveKnownDevice(serial: serial, model: model, marketName: marketName)
                 }
             }
         }
         
         // Merge known devices that are missing (not currently connected)
         let known = getKnownDevicesDict()
+        let knownNames = getKnownDeviceNamesDict()
         for (serial, model) in known {
             // Only add if NOT already in the current devices list
             if !foundSerials.contains(serial) {
-                // Add as disconnected
-                currentDevices.append(Device(id: serial, serial: serial, state: "disconnected", model: model))
+                let savedName = knownNames[serial] ?? ""
+                currentDevices.append(Device(id: serial, serial: serial, state: "disconnected", model: model, marketName: savedName))
             }
         }
         
@@ -485,5 +550,18 @@ class ShellManager: ObservableObject {
         let cmd = "'\(adbPath)' -s \(serial) shell mv \"\(oldPath)\" \"\(newPath)\""
         let output = run(cmd)
         return !output.contains("No such file") && !output.contains("cannot")
+    }
+    // MARK: - Device Info
+    
+    func getBatteryLevel(serial: String) -> Int? {
+        let cmd = "'\(adbPath)' -s \(serial) shell dumpsys battery | grep level"
+        let output = run(cmd)
+        // Output: "  level: 85"
+        let trimmed = output.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let range = trimmed.range(of: "level: ") {
+            let levelStr = trimmed[range.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
+            return Int(levelStr)
+        }
+        return nil
     }
 }

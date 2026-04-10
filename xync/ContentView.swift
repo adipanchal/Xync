@@ -9,10 +9,11 @@ import SwiftUI
 import Combine
 
 struct ContentView: View {
-    @State private var stayAwake = true
-    @State private var turnScreenOff = false
-    @State private var alwaysOnTop = false
-    @State private var rotation = 0
+    @AppStorage("stayAwake") private var stayAwake = true
+    @AppStorage("turnScreenOff") private var turnScreenOff = false
+    @AppStorage("alwaysOnTop") private var alwaysOnTop = false
+    @AppStorage("rotation") private var rotation = 0
+    @AppStorage("dexResolution") private var dexResolution = "1920x1080"
     
     @State private var devices: [Device] = []
     @State private var showWizard = false
@@ -25,7 +26,7 @@ struct ContentView: View {
     // Timer for auto-refresh
     let timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
     
-    @State private var selectedTab: SidebarTab = .wireless
+    @State private var selectedTab: SidebarTab = .dashboard
     
     var body: some View {
         NavigationSplitView {
@@ -48,7 +49,7 @@ struct ContentView: View {
                 if filteredDevices.isEmpty {
                     Spacer()
                     VStack(spacing: 15) {
-                        Image(systemName: selectedTab == .wireless ? "wifi.slash" : (selectedTab == .dex ? "desktopcomputer.trianglebadge.exclamationmark" : "cable.connector.slash"))
+                        Image(systemName: selectedTab == .dashboard ? "square.grid.2x2" : "folder.fill")
                             .font(.system(size: 40))
                             .foregroundColor(.secondary)
                         Text("No devices found.")
@@ -56,66 +57,143 @@ struct ContentView: View {
                     }
                     Spacer()
                 } else {
-                    List(filteredDevices) { device in
-                        if selectedTab == .dex {
-                            DexDeviceRow(
-                                device: device,
-                                onStartDex: { resolution in
-                                    launchScrcpy(serial: device.serial, dexResolution: resolution)
-                                },
-                                onStop: {
-                                    shell.stopScrcpy(serial: device.serial)
-                                },
-                                onReconnect: {
-                                    reconnectDevice(device.serial)
-                                },
-                                onForget: {
-                                    forgetDevice(device.serial)
-                                },
-                                isMirroring: shell.activeScrcpySessions[device.serial] == true
-                            )
-                        } else if selectedTab == .files {
-                            Button {
-                                selectedFileDevice = device
-                            } label: {
-                                HStack {
-                                    Image(systemName: device.isWireless ? "wifi" : "cable.connector")
-                                        .foregroundColor(device.isWireless ? .green : .blue)
-                                    VStack(alignment: .leading) {
-                                        Text(device.displayName).font(.title3).fontWeight(.semibold)
-                                        Text(device.serial).font(.caption).foregroundColor(.secondary).monospaced()
+                    Group {
+                        if selectedTab == .files {
+                            ScrollView {
+                                VStack(spacing: 0) {
+                                    ForEach(Array(filteredDevices.enumerated()), id: \.element.id) { index, device in
+                                        Button {
+                                            selectedFileDevice = device
+                                        } label: {
+                                            HStack(spacing: 14) {
+                                                // Phone icon (small)
+                                                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                                    .fill(Color(nsColor: .windowBackgroundColor))
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                                            .stroke(
+                                                                LinearGradient(
+                                                                    stops: [
+                                                                        .init(color: Color.white.opacity(0.35), location: 0.0),
+                                                                        .init(color: Color.white.opacity(0.12), location: 0.3),
+                                                                        .init(color: Color.white.opacity(0.03), location: 0.6),
+                                                                        .init(color: Color.white.opacity(0.08), location: 1.0)
+                                                                    ],
+                                                                    startPoint: .topLeading,
+                                                                    endPoint: .bottomTrailing
+                                                                ),
+                                                                lineWidth: 1
+                                                            )
+                                                    )
+                                                    .frame(width: 40, height: 60)
+
+                                                
+                                                VStack(alignment: .leading, spacing: 3) {
+                                                    Text(device.displayName)
+                                                        .font(.system(size: 16, weight: .medium))
+                                                        .foregroundColor(.primary)
+                                                    Text(device.serial)
+                                                        .font(.system(size: 12))
+                                                        .foregroundColor(Color.white.opacity(0.4))
+                                                }
+                                                
+                                                Spacer()
+                                                
+                                                Image(systemName: "chevron.right")
+                                                    .font(.system(size: 14))
+                                                    .foregroundColor(Color.white.opacity(0.3))
+                                            }
+                                            .padding(.horizontal, 18)
+                                            .padding(.vertical, 14)
+                                            .contentShape(Rectangle())
+                                        }
+                                        .buttonStyle(.plain)
+                                        
+                                        // Divider between items (not after last)
+                                        if index < filteredDevices.count - 1 {
+                                            Divider()
+                                                .background(Color.white.opacity(0.08))
+                                                .padding(.horizontal, 18)
+                                        }
                                     }
-                                    Spacer()
-                                    Image(systemName: "chevron.right").foregroundColor(.secondary)
                                 }
-                                .padding(.vertical, 8)
-                                .contentShape(Rectangle())
+                                .background(
+                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                        .fill(Color(nsColor: .controlBackgroundColor))
+                                )
+                                .padding()
                             }
-                            .buttonStyle(.plain)
                         } else {
-                            DeviceRow(
-                                device: device,
-                                stayAwake: $stayAwake,
-                                turnScreenOff: $turnScreenOff,
-                                alwaysOnTop: $alwaysOnTop,
-                                rotation: $rotation,
-                                onMirror: { isCamera, source in
-                                    launchScrcpy(serial: device.serial, isCamera: isCamera, source: source)
-                                },
-                                onStop: {
-                                    shell.stopScrcpy(serial: device.serial)
-                                },
-                                onReconnect: {
-                                    reconnectDevice(device.serial)
-                                },
-                                onForget: {
-                                    forgetDevice(device.serial)
-                                },
-                                isMirroring: shell.activeScrcpySessions[device.serial] == true
-                            )
+                            ScrollView {
+                                VStack(spacing: 16) {
+                                    // Connected Devices at the top
+                                    let connected = filteredDevices.filter { $0.state == "device" }
+                                    ForEach(connected) { device in
+                                        DeviceRow(
+                                            device: device,
+                                            onMirror: { isCamera, source in
+                                                launchScrcpy(serial: device.serial, isCamera: isCamera, source: source)
+                                            },
+                                            onDex: {
+                                                launchScrcpy(serial: device.serial, dexResolution: dexResolution)
+                                            },
+                                            onFiles: {
+                                                selectedFileDevice = device
+                                                selectedTab = .files
+                                            },
+                                            onStop: {
+                                                shell.stopScrcpy(serial: device.serial)
+                                            },
+                                            onReconnect: { completion in
+                                                reconnectDevice(device.serial, completion: completion)
+                                            },
+                                            onDisconnect: {
+                                                _ = shell.adbDisconnect(serial: device.serial)
+                                                refreshDevices()
+                                            },
+                                            onForget: {
+                                                forgetDevice(device.serial)
+                                            },
+                                            isMirroring: shell.activeScrcpySessions[device.serial] == true
+                                        )
+                                    }
+                                    
+                                    // Remaining devices under All Devices
+                                    let disconnected = filteredDevices.filter { $0.state != "device" }
+                                    if !disconnected.isEmpty {
+                                        HStack {
+                                            Text("All Devices")
+                                                .font(.headline)
+                                                .padding(.top, 16)
+                                                .padding(.bottom, 8)
+                                            Spacer()
+                                        }
+                                        
+                                        VStack(spacing: 12) {
+                                            ForEach(disconnected) { device in
+                                                DeviceRow(
+                                                    device: device,
+                                                    onMirror: { _, _ in },
+                                                    onDex: { },
+                                                    onFiles: { },
+                                                    onStop: { },
+                                                    onReconnect: { completion in
+                                                        reconnectDevice(device.serial, completion: completion)
+                                                    },
+                                                    onDisconnect: { },
+                                                    onForget: { 
+                                                        forgetDevice(device.serial)
+                                                    },
+                                                    isMirroring: false
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                                .padding()
+                            }
                         }
                     }
-                    .listStyle(.inset)
                     .id(selectedTab)
                     
                     if selectedTab == .files {
@@ -145,7 +223,7 @@ struct ContentView: View {
                     }
                     
                     ToolbarItemGroup(placement: .primaryAction) {
-                        if selectedTab == .wireless {
+                        if selectedTab == .dashboard {
                             Button(action: { showWizard = true }) {
                                 Label("Add Device", systemImage: "plus")
                             }
@@ -167,10 +245,11 @@ struct ContentView: View {
                 .frame(width: 450, height: 320)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(Color(nsColor: .windowBackgroundColor))
         }
-        .onChange(of: selectedTab) { _ in
-            selectedFileDevice = nil
+        .onChange(of: selectedTab) { newTab in
+            if newTab != .files {
+                selectedFileDevice = nil
+            }
         }
         // Sheet removed
         .onAppear {
@@ -194,20 +273,14 @@ struct ContentView: View {
     
     var headerTitle: String {
         switch selectedTab {
-        case .wireless: return "Wireless Devices"
-        case .wired: return "Wired Devices"
-        case .dex: return "Samsung DeX"
+        case .dashboard: return "Dashboard"
         case .files: return "File Explorer"
+        case .settings: return "Dashboard"
         }
     }
     
     var filteredDevices: [Device] {
-        switch selectedTab {
-        case .wireless: return devices.filter { $0.isWireless }
-        case .wired: return devices.filter { !$0.isWireless }
-        case .dex: return devices // Show all for DeX
-        case .files: return devices
-        }
+        return devices
     }
     
     // MARK: - Actions
@@ -227,7 +300,7 @@ struct ContentView: View {
         }
     }
     
-    func reconnectDevice(_ serial: String) {
+    func reconnectDevice(_ serial: String, completion: ((Bool) -> Void)? = nil) {
         print("🔄 Reconnect requested for: \(serial)")
         
         DispatchQueue.global().async {
@@ -256,11 +329,15 @@ struct ContentView: View {
             let result = ShellManager.shared.adbConnect(ip: ip)
             print("Connect result: \(result)")
             
+            // Check if connection was successful
+            let success = result.contains("connected") && !result.contains("failed")
+            
             // Refresh device list
             Thread.sleep(forTimeInterval: 1.0)
             print("🔄 Refreshing device list...")
             DispatchQueue.main.async {
                 self.refreshDevices()
+                completion?(success)
             }
         }
     }
@@ -289,3 +366,21 @@ struct ContentView: View {
     }
 }
 
+// MARK: - Native Visual Effect Background
+struct VisualEffectBackground: NSViewRepresentable {
+    var material: NSVisualEffectView.Material
+    var blendingMode: NSVisualEffectView.BlendingMode
+    
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let view = NSVisualEffectView()
+        view.material = material
+        view.blendingMode = blendingMode
+        view.state = .active
+        return view
+    }
+    
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
+        nsView.material = material
+        nsView.blendingMode = blendingMode
+    }
+}
