@@ -57,13 +57,20 @@ struct FileManagerView: View {
     @State private var progressValue: Double = 0.0
     @State private var progressTotal: Double = 1.0
     
+    enum StorageType: String {
+        case `internal` = "Internal"
+        case external = "External"
+    }
+    
+    @State private var selectedStorageType: StorageType = .internal
+    
     var folderTitle: String {
         if currentPath == "/" {
             return "Root"
-        } else if currentPath == "/sdcard/" || currentPath == "/sdcard" {
-            return device.displayName // Show device name at the default root directory
+        } else if currentPath == "/sdcard/" || currentPath == "/sdcard" || currentPath == "/storage/" {
+            return device.displayName
         } else {
-            return currentPath.components(separatedBy: "/").filter { !$0.isEmpty }.last ?? "Root"
+            return currentPath.components(separatedBy: "/").filter { !$0.isEmpty }.last ?? device.displayName
         }
     }
 
@@ -240,8 +247,20 @@ struct FileManagerView: View {
                     .padding(.horizontal, 12)
             }
             
-            ToolbarItem {
-                Spacer()
+            ToolbarItem(placement: .principal) {
+                Picker("Storage", selection: $selectedStorageType) {
+                    Text("Internal").tag(StorageType.internal)
+                    Text("External").tag(StorageType.external)
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 150)
+                .onChange(of: selectedStorageType) { newValue in
+                    if newValue == .internal {
+                        navigateTo(path: "/sdcard/")
+                    } else {
+                        navigateTo(path: "/storage/")
+                    }
+                }
             }
             
             ToolbarItem(placement: .primaryAction) {

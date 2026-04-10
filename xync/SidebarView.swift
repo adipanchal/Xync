@@ -8,102 +8,81 @@
 import SwiftUI
 
 enum SidebarTab: CaseIterable {
-    case wireless
-    case wired
-    case dex
+    case dashboard
     case files
+    case settings
     
     var rawValue: String {
         switch self {
-        case .wireless: return "Wireless"
-        case .wired: return "Wired Mirror"
-        case .dex: return "Samsung DeX"
+        case .dashboard: return "Dashboard"
         case .files: return "File Explorer"
+        case .settings: return "Settings"
         }
     }
     
     var icon: String {
         switch self {
-        case .wireless: return "wifi"
-        case .wired: return "cable.connector"
-        case .dex: return "desktopcomputer"
+        case .dashboard: return "square.grid.2x2"
         case .files: return "folder"
+        case .settings: return "gearshape"
         }
     }
 }
 
 struct SidebarView: View {
     @Binding var selection: SidebarTab
-    @Environment(\.openWindow) private var openWindow
+    
+    private var navTabs: [SidebarTab] {
+        [.dashboard, .files]
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            ForEach(SidebarTab.allCases, id: \.self) { tab in
+            // Dashboard & File Explorer tabs
+            ForEach(navTabs, id: \.self) { tab in
                 Button(action: {
                     selection = tab
                 }) {
-                    HStack(spacing: 12) {
-                        Image(systemName: tab.icon)
-                            .font(.system(size: 20))
-                            .foregroundColor(selection == tab ? .blue : .primary)
-                            .frame(width: 24)
-                        
-                        Text(tab.rawValue)
-                            .font(.title3)
-                            .foregroundColor(selection == tab ? .blue : .primary)
-                        
-                        if tab == .files {
-                            Text("BETA")
-                                .font(.system(size: 9, weight: .bold))
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 5)
-                                .padding(.vertical, 2)
-                                .background(Color.orange)
-                                .clipShape(Capsule())
-                        }
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 12)
-                    .contentShape(Rectangle())
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(selection == tab ? Color(nsColor: .controlBackgroundColor) : Color.clear)
-                    )
+                    sidebarLabel(tab: tab, isSelected: selection == tab)
                 }
                 .buttonStyle(.plain)
                 .focusable(false)
             }
             
-            Spacer()
-            
-            Divider()
-                .padding(.horizontal, 4)
-            
-            Button(action: { openWindow(id: "about") }) {
-                HStack(spacing: 10) {
-                    Image(systemName: "info.circle")
-                        .font(.system(size: 16))
-                        .foregroundColor(.secondary)
-                        .frame(width: 24)
-                    
-                    Text("About")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.secondary)
-                    
-                    Spacer()
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .contentShape(Rectangle())
+            // Settings tab — uses SettingsLink to open native macOS Settings window
+            SettingsLink {
+                sidebarLabel(tab: .settings, isSelected: false)
             }
             .buttonStyle(.plain)
             .focusable(false)
+            
+            Spacer()
         }
         .padding(.top, 12)
         .padding(.horizontal, 12)
         .padding(.bottom, 12)
+    }
+    
+    private func sidebarLabel(tab: SidebarTab, isSelected: Bool) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: tab.icon)
+                .font(.system(size: 20))
+                .foregroundColor(isSelected ? .blue : .primary)
+                .frame(width: 24)
+            
+            Text(tab.rawValue)
+                .font(.title3)
+                .foregroundColor(isSelected ? .blue : .primary)
+            
+            Spacer()
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 12)
+        .contentShape(Rectangle())
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(isSelected ? Color(nsColor: .controlBackgroundColor) : Color.clear)
+        )
     }
 }
 

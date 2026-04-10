@@ -34,9 +34,7 @@ struct AboutView: View {
                     }
                 }
                 .padding(.top, 28)
-                .padding(.bottom, 20)
                 
-                // Powered by
                 HStack(spacing: 4) {
                     Text("Powered by")
                         .font(.system(size: 12))
@@ -46,31 +44,37 @@ struct AboutView: View {
                         .foregroundColor(.primary)
                 }
                 .padding(.top, 10)
-                
-                Spacer()
-                
-                // Author Section
+                .padding(.bottom, 20)
+                                
                 VStack(spacing: 6) {
-                    Text("Made by")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    
-                    Text("Aditya Panchal")
-                        .font(.system(size: 15, weight: .semibold))
-                    
-                    Text("@adipanchal")
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(.blue)
+                    Link(destination: URL(string: "https://github.com/adipanchal/xync")!) {
+                        Image("github")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(.secondary)
+                            .frame(width: 32, height: 32)
+                            .background(Color.secondary.opacity(0.1))
+                            .clipShape(Circle())
+                    }
+                    .buttonStyle(.plain)
+                    .onHover { hovering in
+                        if hovering {
+                            NSCursor.pointingHand.push()
+                        } else {
+                            NSCursor.pop()
+                        }
+                    }
                 }
                 .padding(.bottom, 8)
+
+                Spacer()
                 
-                // Copyright
                 Text("© 2026 Aditya Panchal. All rights reserved.")
                     .font(.system(size: 11))
                     .foregroundColor(.secondary.opacity(0.7))
                     .padding(.bottom, 20)
             }
             .frame(width: 320, height: 350)
-            .background(.ultraThinMaterial)
     }
 }
