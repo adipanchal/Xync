@@ -79,7 +79,7 @@ struct ConnectionWizardView: View {
                                      .fill(Material.ultraThin)
                                      .overlay(
                                          RoundedRectangle(cornerRadius: 8)
-                                             .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                             .stroke(Color.primary.opacity(0.2), lineWidth: 1)
                                      )
                              )
                     }
@@ -118,7 +118,7 @@ struct ConnectionWizardView: View {
                     .font(.system(.caption, design: .monospaced))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
-                    .background(Color.black.opacity(0.1))
+                    .background(Color.primary.opacity(0.05))
                     .cornerRadius(8)
             }
             .frame(height: 120)
@@ -334,7 +334,7 @@ struct StepView: View {
                                 .fill(Material.ultraThin)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                        .stroke(Color.primary.opacity(0.2), lineWidth: 1)
                                 )
                         )
                         .shadow(color: Color.black.opacity(0.2), radius: 4, x: 0, y: 2)
@@ -347,7 +347,7 @@ struct StepView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color.gray.opacity(0.1))
+        .background(Color(nsColor: .controlBackgroundColor))
         .cornerRadius(10)
     }
 }

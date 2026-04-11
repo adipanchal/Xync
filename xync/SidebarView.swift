@@ -81,7 +81,7 @@ struct SidebarView: View {
         .contentShape(Rectangle())
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(isSelected ? Color(nsColor: .controlBackgroundColor) : Color.clear)
+                .fill(isSelected ? Color.primary.opacity(0.04) : Color.clear)
         )
     }
 }

@@ -18,6 +18,8 @@ struct DeviceRow: View {
     let onForget: () -> Void
     let isMirroring: Bool
     
+    @Environment(\.colorScheme) var colorScheme
+    
     @State private var showSettings = false
     @State private var batteryLevel: Int? = nil
     @State private var isConnecting = false
@@ -28,8 +30,8 @@ struct DeviceRow: View {
     @State private var isBackCamLoading = false
     @State private var connectionError: String? = nil
     
-    // Card background color #222222
-    private let cardBg = Color(nsColor: .controlBackgroundColor)
+    // Card background adaptively contrasting
+    private let cardBg = Color.primary.opacity(0.04)
     private let buttonBg = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
     
     var body: some View {
@@ -48,7 +50,7 @@ struct DeviceRow: View {
     private var connectedCard: some View {
         HStack(alignment: .top, spacing: 20) {
             // Phone icon
-            phoneIcon(width: 90, height: 150, cornerRadius: 16, innerCornerRadius: 12, innerPadding: 8)
+            phoneIcon(width: 82, height: 140, cornerRadius: 15, innerCornerRadius: 11, innerPadding: 7)
             
             // Center: Device Info + Action Buttons
             VStack(alignment: .leading, spacing: 6) {
@@ -60,7 +62,7 @@ struct DeviceRow: View {
                 // Serial + connection type
                 Text("\(device.serial) · \(device.isWireless ? "Wireless" : "Wired")")
                     .font(.system(size: 12))
-                    .foregroundColor(Color.white.opacity(0.45))
+                    .foregroundColor(.secondary)
                 
                 // Status row: Connected + Battery
                 HStack(spacing: 6) {
@@ -69,7 +71,7 @@ struct DeviceRow: View {
                         .frame(width: 8, height: 8)
                     Text("Connected")
                         .font(.system(size: 13))
-                        .foregroundColor(Color.white.opacity(0.5))
+                        .foregroundColor(.secondary)
                     
                     if let level = batteryLevel {
                         Image(systemName: batteryIconName(level))
@@ -78,7 +80,7 @@ struct DeviceRow: View {
                             .padding(.leading, 4)
                         Text("\(level)%")
                             .font(.system(size: 13))
-                            .foregroundColor(Color.white.opacity(0.5))
+                            .foregroundColor(.secondary)
                     }
                 }
                 .padding(.top, 2)
@@ -101,7 +103,7 @@ struct DeviceRow: View {
                 }
                 
                 Divider()
-                    .background(Color.white.opacity(0.1))
+                    .background(Color.primary.opacity(0.1))
                     .padding(.vertical, 4)
                 
                 // Action buttons row 2: Front Camera, Back Camera
@@ -141,8 +143,10 @@ struct DeviceRow: View {
                         ProgressView()
                             .scaleEffect(0.55)
                             .frame(width: 16, height: 16)
+                            .frame(maxWidth: .infinity)
                     } else {
                         Text("Disconnect")
+                            .frame(maxWidth: .infinity)
                     }
                 }
                 .buttonStyle(.bordered)
@@ -154,6 +158,7 @@ struct DeviceRow: View {
                 Button(action: { onForget() }) {
                     Text("Remove Device")
                         .foregroundColor(.red)
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.regular)
@@ -172,7 +177,7 @@ struct DeviceRow: View {
     private var disconnectedCard: some View {
         HStack(spacing: 16) {
             // Small phone icon
-            phoneIcon(width: 44, height: 68, cornerRadius: 10, innerCornerRadius: 7, innerPadding: 5)
+            phoneIcon(width: 32, height: 50, cornerRadius: 8, innerCornerRadius: 6, innerPadding: 4)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(device.displayName)
@@ -181,7 +186,7 @@ struct DeviceRow: View {
                 
                 Text(device.serial)
                     .font(.system(size: 12))
-                    .foregroundColor(Color.white.opacity(0.45))
+                    .foregroundColor(.secondary)
                 
                 if let error = connectionError {
                     Text(error)
@@ -190,7 +195,7 @@ struct DeviceRow: View {
                 } else {
                     Text("Not connected")
                         .font(.system(size: 12))
-                        .foregroundColor(Color.white.opacity(0.35))
+                        .foregroundColor(.secondary)
                 }
             }
             
@@ -228,17 +233,29 @@ struct DeviceRow: View {
     // MARK: - Phone Icon
     
     private func phoneIcon(width: CGFloat, height: CGFloat, cornerRadius: CGFloat, innerCornerRadius: CGFloat, innerPadding: CGFloat) -> some View {
-        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-            .fill(Color(nsColor: .windowBackgroundColor))
+        let topColor = Color(red: 0.16, green: 0.16, blue: 0.16)
+        let bottomColor = Color(red: 0.04, green: 0.04, blue: 0.04)
+        
+        return RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+            .fill(
+                LinearGradient(
+                    stops: [
+                        .init(color: topColor, location: 0.0),
+                        .init(color: bottomColor, location: 1.0)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .stroke(
                         LinearGradient(
                             stops: [
-                                .init(color: Color.white.opacity(0.35), location: 0.0),
+                                .init(color: Color.white.opacity(0.4), location: 0.0),
                                 .init(color: Color.white.opacity(0.12), location: 0.3),
-                                .init(color: Color.white.opacity(0.03), location: 0.6),
-                                .init(color: Color.white.opacity(0.08), location: 1.0)
+                                .init(color: Color.white.opacity(0.02), location: 0.6),
+                                .init(color: Color.white.opacity(0.1), location: 1.0)
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
@@ -246,6 +263,7 @@ struct DeviceRow: View {
                         lineWidth: 1.2
                     )
             )
+            .shadow(color: Color.black.opacity(colorScheme == .light ? 0.25 : 0), radius: colorScheme == .light ? 6 : 0, x: 0, y: colorScheme == .light ? 3 : 0)
             .frame(width: width, height: height)
     }
     
@@ -273,7 +291,10 @@ struct DeviceRow: View {
     }
     
     private func sideButton(_ title: String, action: @escaping () -> Void) -> some View {
-        Button(title, action: action)
+        Button(action: action) {
+            Text(title)
+                .frame(maxWidth: .infinity)
+        }
             .buttonStyle(.bordered)
             .controlSize(.regular)
             .frame(width: 140)
@@ -303,7 +324,7 @@ struct DeviceRow: View {
     private func batteryColor(_ level: Int) -> Color {
         if level <= 20 { return .red }
         if level <= 40 { return .orange }
-        return Color.white.opacity(0.5)
+        return .secondary
     }
     
     // MARK: - Quick Share Actions

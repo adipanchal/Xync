@@ -15,6 +15,8 @@ struct ContentView: View {
     @AppStorage("rotation") private var rotation = 0
     @AppStorage("dexResolution") private var dexResolution = "1920x1080"
     
+    @Environment(\.colorScheme) var colorScheme
+    
     @State private var devices: [Device] = []
     @State private var showWizard = false
     @State private var selectedFileDevice: Device? = nil
@@ -67,17 +69,29 @@ struct ContentView: View {
                                         } label: {
                                             HStack(spacing: 14) {
                                                 // Phone icon (small)
-                                                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                                    .fill(Color(nsColor: .windowBackgroundColor))
+                                                let topColor = Color(red: 0.16, green: 0.16, blue: 0.16)
+                                                let bottomColor = Color(red: 0.04, green: 0.04, blue: 0.04)
+                                                
+                                                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                                    .fill(
+                                                        LinearGradient(
+                                                            stops: [
+                                                                .init(color: topColor, location: 0.0),
+                                                                .init(color: bottomColor, location: 1.0)
+                                                            ],
+                                                            startPoint: .topLeading,
+                                                            endPoint: .bottomTrailing
+                                                        )
+                                                    )
                                                     .overlay(
-                                                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                                        RoundedRectangle(cornerRadius: 6, style: .continuous)
                                                             .stroke(
                                                                 LinearGradient(
                                                                     stops: [
-                                                                        .init(color: Color.white.opacity(0.35), location: 0.0),
+                                                                        .init(color: Color.white.opacity(0.4), location: 0.0),
                                                                         .init(color: Color.white.opacity(0.12), location: 0.3),
-                                                                        .init(color: Color.white.opacity(0.03), location: 0.6),
-                                                                        .init(color: Color.white.opacity(0.08), location: 1.0)
+                                                                        .init(color: Color.white.opacity(0.02), location: 0.6),
+                                                                        .init(color: Color.white.opacity(0.1), location: 1.0)
                                                                     ],
                                                                     startPoint: .topLeading,
                                                                     endPoint: .bottomTrailing
@@ -85,7 +99,8 @@ struct ContentView: View {
                                                                 lineWidth: 1
                                                             )
                                                     )
-                                                    .frame(width: 40, height: 60)
+                                                    .shadow(color: Color.black.opacity(colorScheme == .light ? 0.2 : 0), radius: colorScheme == .light ? 4 : 0, x: 0, y: colorScheme == .light ? 2 : 0)
+                                                    .frame(width: 28, height: 44)
 
                                                 
                                                 VStack(alignment: .leading, spacing: 3) {
@@ -94,14 +109,14 @@ struct ContentView: View {
                                                         .foregroundColor(.primary)
                                                     Text(device.serial)
                                                         .font(.system(size: 12))
-                                                        .foregroundColor(Color.white.opacity(0.4))
+                                                        .foregroundColor(.secondary)
                                                 }
                                                 
                                                 Spacer()
                                                 
                                                 Image(systemName: "chevron.right")
                                                     .font(.system(size: 14))
-                                                    .foregroundColor(Color.white.opacity(0.3))
+                                                    .foregroundColor(.secondary)
                                             }
                                             .padding(.horizontal, 18)
                                             .padding(.vertical, 14)
@@ -112,14 +127,14 @@ struct ContentView: View {
                                         // Divider between items (not after last)
                                         if index < filteredDevices.count - 1 {
                                             Divider()
-                                                .background(Color.white.opacity(0.08))
+                                                .background(Color.primary.opacity(0.08))
                                                 .padding(.horizontal, 18)
                                         }
                                     }
                                 }
                                 .background(
                                     RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                        .fill(Color(nsColor: .controlBackgroundColor))
+                                        .fill(Color.primary.opacity(0.04))
                                 )
                                 .padding()
                             }
