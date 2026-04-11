@@ -554,13 +554,15 @@ class ShellManager: ObservableObject {
     // MARK: - Device Info
     
     func getBatteryLevel(serial: String) -> Int? {
-        let cmd = "'\(adbPath)' -s \(serial) shell dumpsys battery | grep level"
+        let cmd = "'\(adbPath)' -s \(serial) shell dumpsys battery"
         let output = run(cmd)
-        // Output: "  level: 85"
-        let trimmed = output.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let range = trimmed.range(of: "level: ") {
-            let levelStr = trimmed[range.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
-            return Int(levelStr)
+        
+        for line in output.components(separatedBy: .newlines) {
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.hasPrefix("level:") {
+                let str = trimmed.replacingOccurrences(of: "level:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                return Int(str)
+            }
         }
         return nil
     }
