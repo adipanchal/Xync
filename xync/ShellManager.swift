@@ -416,8 +416,19 @@ class ShellManager: ObservableObject {
             args.append("--new-display=\(res)")
         }
         
-        // Prepend ADB environment variable so scrcpy knows exactly which adb to use, and include homebrew paths
-        let command = "export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\"; export ADB='\(adbPath)'; " + args.joined(separator: " ")
+        // Prepend ADB environment variable and SCRCPY_SERVER_PATH so scrcpy knows exactly which adb and server to use
+        let bundledBinDir = DependencyManager.shared.binDir.path
+        let serverPath = "\(bundledBinDir)/scrcpy-server"
+        
+        let pathExport = "export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\""
+        let adbExport = "export ADB='\(adbPath)'"
+        var command = "\(pathExport); \(adbExport); "
+        
+        if FileManager.default.fileExists(atPath: serverPath) {
+            command += "export SCRCPY_SERVER_PATH='\(serverPath)'; "
+        }
+        
+        command += args.joined(separator: " ")
         print("Launching: \(command)")
         
         // Stop existing if any
@@ -530,7 +541,7 @@ class ShellManager: ObservableObject {
     }
     
     func duplicateFile(serial: String, path: String) -> Bool {
-        var name = path.components(separatedBy: "/").last ?? ""
+        let name = path.components(separatedBy: "/").last ?? ""
         if name.isEmpty { return false }
         var dir = path.components(separatedBy: "/").dropLast().joined(separator: "/")
         if dir.isEmpty { dir = "/" }

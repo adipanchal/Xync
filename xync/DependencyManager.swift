@@ -134,13 +134,23 @@ class DependencyManager: ObservableObject {
         let contents = try fileManager.contentsOfDirectory(at: extractDir, includingPropertiesForKeys: nil)
         if let scrcpyDir = contents.first(where: { $0.lastPathComponent.contains("scrcpy") }) {
             let scrcpyBinary = scrcpyDir.appendingPathComponent("scrcpy")
+            let scrcpyServer = scrcpyDir.appendingPathComponent("scrcpy-server")
             let destination = binDir.appendingPathComponent("scrcpy")
+            let serverDestination = binDir.appendingPathComponent("scrcpy-server")
             
             if fileManager.fileExists(atPath: destination.path) {
                 try fileManager.removeItem(at: destination)
             }
+            if fileManager.fileExists(atPath: serverDestination.path) {
+                try fileManager.removeItem(at: serverDestination)
+            }
             
             try fileManager.copyItem(at: scrcpyBinary, to: destination)
+            
+            if fileManager.fileExists(atPath: scrcpyServer.path) {
+                try fileManager.copyItem(at: scrcpyServer, to: serverDestination)
+            }
+            
             try makeExecutable(destination)
         }
         

@@ -50,7 +50,7 @@ struct DeviceRow: View {
     private var connectedCard: some View {
         HStack(alignment: .top, spacing: 20) {
             // Phone icon
-            phoneIcon(width: 82, height: 140, cornerRadius: 15, innerCornerRadius: 11, innerPadding: 7)
+            phoneIcon(width: 86, height: 168, cornerRadius: 15, innerCornerRadius: 11, innerPadding: 7)
             
             // Center: Device Info + Action Buttons
             VStack(alignment: .leading, spacing: 6) {
@@ -127,7 +127,7 @@ struct DeviceRow: View {
             VStack(spacing: 8) {
                 sideButton("Settings") { showSettings.toggle() }
                     .popover(isPresented: $showSettings) {
-                        GeneralSettingsView()
+                        DeviceMirrorSettingsView()
                             .frame(width: 350, height: 280)
                     }
                 sideButton("Send Clipboard") { sendClipboardText() }
@@ -177,7 +177,7 @@ struct DeviceRow: View {
     private var disconnectedCard: some View {
         HStack(spacing: 16) {
             // Small phone icon
-            phoneIcon(width: 32, height: 50, cornerRadius: 8, innerCornerRadius: 6, innerPadding: 4)
+            phoneIcon(width: 32, height: 56, cornerRadius: 6, innerCornerRadius: 4, innerPadding: 2)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(device.displayName)
