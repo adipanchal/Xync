@@ -254,11 +254,11 @@ struct FileManagerView: View {
                 }
                 .pickerStyle(.segmented)
                 .frame(width: 150)
-                .onChange(of: selectedStorageType) { newValue in
+                .onChange(of: selectedStorageType) { _, newValue in
                     if newValue == .internal {
                         navigateTo(path: "/sdcard/")
                     } else {
-                        navigateTo(path: "/storage/")
+                        navigateToExternalStorage()
                     }
                 }
             }
@@ -397,6 +397,32 @@ struct FileManagerView: View {
             forwardHistory.removeAll()
             currentPath = path
             loadFiles()
+        }
+    }
+    
+    /// When switching to External, skip the raw /storage/ listing and jump directly
+    /// into the SD card folder (first folder that isn't 'emulated' or 'self').
+    private func navigateToExternalStorage() {
+        isLoading = true
+        DispatchQueue.global().async {
+            let entries = ShellManager.shared.listDirectory(serial: device.serial, path: "/storage/")
+            // Find the actual SD card: skip 'emulated' and 'self' which are virtual
+            let sdCard = entries.first(where: { $0.isDirectory && $0.name != "emulated" && $0.name != "self" })
+            DispatchQueue.main.async {
+                if let sd = sdCard {
+                    // Go directly into the SD card folder
+                    backHistory.append(currentPath)
+                    forwardHistory.removeAll()
+                    currentPath = "/storage/\(sd.name)/"
+                    loadFiles()
+                } else {
+                    // Fallback: no SD card found, show /storage/ as-is
+                    backHistory.append(currentPath)
+                    forwardHistory.removeAll()
+                    currentPath = "/storage/"
+                    loadFiles()
+                }
+            }
         }
     }
     

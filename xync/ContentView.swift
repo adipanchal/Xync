@@ -216,7 +216,7 @@ struct ContentView: View {
                             Image(systemName: "lightbulb.fill")
                                 .foregroundColor(.yellow)
                                 .font(.system(size: 11))
-                            Text("Keep your phone screen on while using File Explorer for a stable connection.")
+                            Text("In wireless mode, keep your phone screen on for a stable connection.")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -261,7 +261,7 @@ struct ContentView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
-        .onChange(of: selectedTab) { newTab in
+        .onChange(of: selectedTab) { _, newTab in
             if newTab != .files {
                 selectedFileDevice = nil
             }
@@ -281,6 +281,12 @@ struct ContentView: View {
             Button("Later") { }
         } message: {
             Text("Version \(updateManager.updateVersion) of Xync is now available! Would you like to download it now?")
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("navigateToFiles"))) { notification in
+            if let device = notification.object as? Device {
+                selectedFileDevice = device
+                selectedTab = .files
+            }
         }
     }
     
