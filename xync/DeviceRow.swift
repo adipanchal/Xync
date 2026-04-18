@@ -228,6 +228,11 @@ struct DeviceRow: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(cardBg)
         )
+        .contextMenu {
+            Button(role: .destructive, action: { onForget() }) {
+                Label("Remove Device", systemImage: "trash")
+            }
+        }
     }
     
     // MARK: - Phone Icon

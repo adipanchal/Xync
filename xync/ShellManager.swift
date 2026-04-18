@@ -359,6 +359,14 @@ class ShellManager: ObservableObject {
             return "Error: \(error.localizedDescription)"
         }
     }
+
+    /// Disconnects every currently connected device so only one device is active at a time.
+    func disconnectAllConnected() {
+        let current = listDevices().filter { $0.state == "device" }
+        for device in current {
+            _ = adbDisconnect(serial: device.serial)
+        }
+    }
     
     func adbTcpIp(port: String = "5555", serial: String? = nil) -> String {
         if let s = serial, !s.isEmpty {

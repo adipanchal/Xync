@@ -14,6 +14,7 @@ struct ContentView: View {
     @AppStorage("alwaysOnTop") private var alwaysOnTop = false
     @AppStorage("rotation") private var rotation = 0
     @AppStorage("dexResolution") private var dexResolution = "1920x1080"
+    @AppStorage("xyncEnabled") private var xyncEnabled = true
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -143,39 +144,43 @@ struct ContentView: View {
                                 VStack(spacing: 16) {
                                     // Connected Devices at the top
                                     let connected = filteredDevices.filter { $0.state == "device" }
-                                    ForEach(connected) { device in
+                                    let activeDevice = connected.first
+                                    let inactiveConnected = connected.dropFirst()
+
+                                    if let active = activeDevice {
                                         DeviceRow(
-                                            device: device,
+                                            device: active,
                                             onMirror: { isCamera, source in
-                                                launchScrcpy(serial: device.serial, isCamera: isCamera, source: source)
+                                                launchScrcpy(serial: active.serial, isCamera: isCamera, source: source)
                                             },
                                             onDex: {
-                                                launchScrcpy(serial: device.serial, dexResolution: dexResolution)
+                                                launchScrcpy(serial: active.serial, dexResolution: dexResolution)
                                             },
                                             onFiles: {
-                                                selectedFileDevice = device
+                                                selectedFileDevice = active
                                                 selectedTab = .files
                                             },
                                             onStop: {
-                                                shell.stopScrcpy(serial: device.serial)
+                                                shell.stopScrcpy(serial: active.serial)
                                             },
                                             onReconnect: { completion in
-                                                reconnectDevice(device.serial, completion: completion)
+                                                reconnectDevice(active.serial, completion: completion)
                                             },
                                             onDisconnect: {
-                                                _ = shell.adbDisconnect(serial: device.serial)
+                                                _ = shell.adbDisconnect(serial: active.serial)
                                                 refreshDevices()
                                             },
                                             onForget: {
-                                                forgetDevice(device.serial)
+                                                forgetDevice(active.serial)
                                             },
-                                            isMirroring: shell.activeScrcpySessions[device.serial] == true
+                                            isMirroring: shell.activeScrcpySessions[active.serial] == true
                                         )
                                     }
-                                    
+
                                     // Remaining devices under All Devices
                                     let disconnected = filteredDevices.filter { $0.state != "device" }
-                                    if !disconnected.isEmpty {
+                                    let allOther = Array(inactiveConnected) + disconnected
+                                    if !allOther.isEmpty {
                                         HStack {
                                             Text("All Devices")
                                                 .font(.headline)
@@ -183,9 +188,9 @@ struct ContentView: View {
                                                 .padding(.bottom, 8)
                                             Spacer()
                                         }
-                                        
+
                                         VStack(spacing: 12) {
-                                            ForEach(disconnected) { device in
+                                            ForEach(allOther) { device in
                                                 DeviceRow(
                                                     device: device,
                                                     onMirror: { _, _ in },
@@ -195,8 +200,11 @@ struct ContentView: View {
                                                     onReconnect: { completion in
                                                         reconnectDevice(device.serial, completion: completion)
                                                     },
-                                                    onDisconnect: { },
-                                                    onForget: { 
+                                                    onDisconnect: {
+                                                        _ = shell.adbDisconnect(serial: device.serial)
+                                                        refreshDevices()
+                                                    },
+                                                    onForget: {
                                                         forgetDevice(device.serial)
                                                     },
                                                     isMirroring: false
@@ -272,7 +280,7 @@ struct ContentView: View {
             updateManager.checkForUpdates()
         }
         .onReceive(timer) { _ in
-            refreshDevices()
+            if xyncEnabled { refreshDevices() }
         }
         .alert("Update Available 🚀", isPresented: $updateManager.showUpdateAlert) {
             Button("Download Update", role: .cancel) {

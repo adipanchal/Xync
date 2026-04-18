@@ -79,82 +79,123 @@ struct MenuBarView: View {
     @State private var devices: [Device] = []
     @State private var isOtherDevicesExpanded = false
     @State private var isOtherDevicesHovering = false
+    @AppStorage("xyncEnabled") private var xyncEnabled = true
     
-    var connectedDevices: [Device] { devices.filter { $0.state == "device" } }
-    var otherDevices: [Device] { devices.filter { $0.state != "device" } }
+    // Only the FIRST connected device is "active" — others are treated as "other"
+    var activeDevice: Device? { devices.first(where: { $0.state == "device" }) }
+    var otherDevices: [Device] {
+        let inactiveConnected = devices.filter { $0.state == "device" }.dropFirst()
+        let disconnected = devices.filter { $0.state != "device" }
+        return Array(inactiveConnected) + disconnected
+    }
+    var hasConnected: Bool { activeDevice != nil }
     
     var body: some View {
         VStack(spacing: 0) {
-            // Connected Devices
-            VStack(spacing: 16) {
-                if connectedDevices.isEmpty {
-                    Text("No connected devices")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .padding(.vertical, 30)
-                } else {
-                    ForEach(connectedDevices, id: \.id) { device in
-                        MenuBarDeviceCard(device: device, shell: shell, onRefresh: refresh)
-                        
-                        if device.id != connectedDevices.last?.id {
-                            Divider()
-                                .padding(.vertical, 4)
-                        }
-                    }
-                }
-            }
-            .padding(.top, 16)
-            .padding(.horizontal, 16)
-            .padding(.bottom, 12)
-            
-            Divider()
-            
-            // Other Devices Expansion
-            if !otherDevices.isEmpty {
-                VStack(spacing: 6) {
-                    Button(action: {
-                        withAnimation(.easeInOut(duration: 0.15)) {
-                            isOtherDevicesExpanded.toggle()
-                        }
-                    }) {
-                        HStack {
-                            Text("Other Devices")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(.primary)
-                            Spacer()
-                            Image(systemName: isOtherDevicesExpanded ? "chevron.down" : "chevron.right")
-                                .font(.system(size: 12, weight: .bold))
-                                .foregroundColor(Color.primary.opacity(0.4))
-                        }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(isOtherDevicesHovering ? Color.primary.opacity(0.1) : Color.clear)
-                        .clipShape(RoundedRectangle(cornerRadius: 50, style: .continuous))
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .onHover { hovering in
-                        isOtherDevicesHovering = hovering
-                    }
-                    
-                    if isOtherDevicesExpanded {
-                        VStack(spacing: 2) {
-                            ForEach(otherDevices, id: \.id) { device in
-                                OtherDeviceRow(device: device, shell: shell, onRefresh: refresh)
-                            }
-                        }
-                        .padding(.horizontal, 2)
-                        .padding(.top, 2)
-                    }
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
-                
-                Divider()
-            }
-            
-            // Footer
+
+            // ── Master Toggle Header ──────────────────────────
             HStack {
+                Text("Xync")
+                    .font(.system(size: 13, weight: .semibold))
+                Spacer()
+                Toggle("", isOn: $xyncEnabled)
+                    .toggleStyle(.switch)
+                    .labelsHidden()
+                    .scaleEffect(0.75)
+                    .onChange(of: xyncEnabled) { _, newValue in
+                        if newValue { refresh() } else { devices = [] }
+                    }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+
+            Divider()
+                .padding(.horizontal, 16)
+
+            if xyncEnabled {
+                // Top section: active device or first known device
+                VStack(spacing: 0) {
+                    if let active = activeDevice {
+                        // Active connected device
+                        ConnectedDeviceSection(device: active, shell: shell, onRefresh: refresh)
+                    } else if let firstOther = otherDevices.first {
+                        // No active device — show first known device for quick connect
+                        HStack {
+                            Text("Known Device")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(.secondary)
+                            Spacer()
+                        }
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 10)
+
+                        OtherDeviceRow(device: firstOther, shell: shell, onRefresh: refresh)
+                    } else {
+                        Text("No connected devices")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 10)
+                    }
+                }
+                .padding(.top, 8)
+                .padding(.horizontal, 6)
+                .padding(.bottom, !hasConnected && !otherDevices.isEmpty ? 4 : 12)
+
+                Divider()
+                    .padding(.horizontal, 16)
+
+                // Other Devices section: inactive connected + all disconnected
+                let remainingOther = !hasConnected ? Array(otherDevices.dropFirst()) : otherDevices
+                if !remainingOther.isEmpty {
+                    VStack(spacing: 6) {
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.15)) {
+                                isOtherDevicesExpanded.toggle()
+                            }
+                        }) {
+                            HStack {
+                                Text("Other Devices")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                Image(systemName: isOtherDevicesExpanded ? "chevron.down" : "chevron.right")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundColor(Color.primary.opacity(0.4))
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 4)
+                            .background(isOtherDevicesHovering ? Color.primary.opacity(0.1) : Color.clear)
+                            .clipShape(RoundedRectangle(cornerRadius: 50, style: .continuous))
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .onHover { hovering in
+                            isOtherDevicesHovering = hovering
+                        }
+
+                        if isOtherDevicesExpanded {
+                            VStack(spacing: 2) {
+                                ForEach(remainingOther, id: \.id) { device in
+                                    OtherDeviceRow(device: device, shell: shell, onRefresh: refresh)
+                                }
+                            }
+                            .padding(.top, 2)
+                        }
+                    }
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 4)
+
+                    Divider()
+                        .padding(.horizontal, 16)
+                }
+            } else {
+                Divider()
+                    .padding(.horizontal, 16)
+            }
+
+            // Footer
+            HStack(spacing: 0) {
                 Button("Open Xync") {
                     NSApp.setActivationPolicy(.regular)
                     NSApp.activate(ignoringOtherApps: true)
@@ -167,9 +208,9 @@ struct MenuBarView: View {
                 .buttonStyle(.plain)
                 .foregroundColor(.accentColor)
                 .font(.system(size: 12, weight: .medium))
-                
+
                 Spacer()
-                
+
                 Button("Quit") {
                     NSApplication.shared.terminate(nil)
                 }
@@ -177,14 +218,15 @@ struct MenuBarView: View {
                 .font(.system(size: 12))
                 .foregroundColor(.secondary)
             }
-            .padding(12)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
         }
         .frame(width: 270)
         .onAppear {
-            refresh()
+            if xyncEnabled { refresh() }
         }
     }
-    
+
     private func refresh() {
         DispatchQueue.global(qos: .userInitiated).async {
             let devs = shell.listDevices()
@@ -195,42 +237,75 @@ struct MenuBarView: View {
     }
 }
 
-struct MenuBarDeviceCard: View {
+// Connected device section: same look as Known Device row + action tiles below
+struct ConnectedDeviceSection: View {
     let device: Device
     @ObservedObject var shell: ShellManager
     let onRefresh: () -> Void
-    
+    @State private var hover = false
+
     @AppStorage("stayAwake") private var stayAwake = true
     @AppStorage("turnScreenOff") private var turnScreenOff = false
     @AppStorage("alwaysOnTop") private var alwaysOnTop = false
     @AppStorage("rotation") private var rotation = 0
-    
+
     var body: some View {
         let name = device.marketName.isEmpty ? (device.model == "Unknown" ? device.serial : device.model) : device.marketName
-        
-        VStack(alignment: .leading, spacing: 14) {
-            // Header
+        let isMirroring = shell.activeScrcpySessions[device.serial] == true
+
+        VStack(spacing: 0) {
+            // ── Heading (same as Known Device) ─────────────────
             HStack {
-                Text(name)
-                    .font(.system(size: 15, weight: .bold))
-                
+                Text("Known Device")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(.secondary)
                 Spacer()
-                
-                Button(action: {
-                    onRefresh()
-                }) {
-                    Image(systemName: "arrow.clockwise")
-                }
-                .buttonStyle(.plain)
-                .foregroundColor(.secondary)
-                .font(.system(size: 12))
             }
-            
-            // Action Grid
-            let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-            let isMirroring = shell.activeScrcpySessions[device.serial] == true
-            
-            LazyVGrid(columns: columns, spacing: 16) {
+            .padding(.vertical, 4)
+            .padding(.horizontal, 10)
+
+            // ── Device row (blue icon = connected, tap to disconnect) ──
+            Button(action: {
+                _ = shell.adbDisconnect(serial: device.serial)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { onRefresh() }
+            }) {
+                HStack(spacing: 12) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.accentColor)
+                            .frame(width: 26, height: 26)
+                        Image(systemName: "smartphone")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.white)
+                    }
+                    Text(name)
+                        .font(.system(size: 13))
+                        .foregroundColor(.primary)
+                    Spacer()
+                    Button(action: { onRefresh() }) {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.system(size: 12))
+                            .foregroundColor(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(hover ? Color.primary.opacity(0.1) : Color.clear)
+                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .onHover { h in hover = h }
+
+            // ── Divider + Action tiles ──────────────────────────
+            Divider()
+                .padding(.horizontal, 10)
+                .padding(.top, 6)
+                .padding(.bottom, 10)
+
+            let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+            LazyVGrid(columns: columns, spacing: 12) {
                 ActionButton(icon: "play.display", title: "Mirror", isActive: isMirroring) {
                     if isMirroring {
                         shell.stopScrcpy(serial: device.serial)
@@ -247,12 +322,6 @@ struct MenuBarDeviceCard: View {
                         shell.sendText(serial: device.serial, text: string)
                     }
                 }
-                ActionButton(icon: "camera", title: "Front Cam") {
-                    shell.startScrcpy(serial: device.serial, stayAwake: false, turnScreenOff: false, alwaysOnTop: false, rotation: 0, isCamera: true, cameraSource: "front")
-                }
-                ActionButton(icon: "camera.fill", title: "Back Cam") {
-                    shell.startScrcpy(serial: device.serial, stayAwake: false, turnScreenOff: false, alwaysOnTop: false, rotation: 0, isCamera: true, cameraSource: "back")
-                }
                 ActionButton(icon: "arrow.up.doc", title: "Upload") {
                     let panel = NSOpenPanel()
                     panel.allowsMultipleSelection = false
@@ -266,25 +335,11 @@ struct MenuBarDeviceCard: View {
                     }
                 }
             }
-            .padding(.vertical, 4)
-            
-            // Full-width Disconnect Pill
-            Button(action: {
-                _ = shell.adbDisconnect(serial: device.serial)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { onRefresh() }
-            }) {
-                Text("Disconnect")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(Color.red.opacity(0.9))
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 28)
-                    .background(Color.red.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
-            }
-            .buttonStyle(.plain)
+            .padding(.horizontal, 10)
+            .padding(.bottom, 4)
         }
     }
-    
+
     private func openAppAndBringToFront() {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
@@ -352,20 +407,74 @@ struct OtherDeviceRow: View {
     let shell: ShellManager
     let onRefresh: () -> Void
     @State private var hover = false
-    
+    @State private var isConnecting = false
+    @State private var showOffline = false
+
     var body: some View {
         let name = device.marketName.isEmpty ? (device.model == "Unknown" ? device.serial : device.model) : device.marketName
         Button(action: {
-            _ = shell.adbConnect(ip: device.serial)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { onRefresh() }
+            guard !isConnecting else { return }
+            isConnecting = true
+            showOffline = false
+            DispatchQueue.global(qos: .userInitiated).async {
+                // Disconnect any currently active device first (exclusive mode)
+                shell.disconnectAllConnected()
+                // Now connect to the new device
+                let result = shell.adbConnect(ip: device.serial)
+                let connected = result.contains("connected") && !result.contains("failed") && !result.contains("cannot")
+                DispatchQueue.main.async {
+                    isConnecting = false
+                    if connected {
+                        onRefresh()
+                    } else {
+                        showOffline = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                            showOffline = false
+                        }
+                    }
+                }
+            }
+            // Safety timeout — if still connecting after 6 s, give up
+            DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
+                if isConnecting {
+                    isConnecting = false
+                    showOffline = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                        showOffline = false
+                    }
+                }
+            }
         }) {
             HStack(spacing: 12) {
-                Image(systemName: "smartphone")
-                    .font(.system(size: 14))
-                    .foregroundColor(Color(red: 169/255, green: 169/255, blue: 169/255))
-                Text(name)
-                    .font(.system(size: 13))
-                    .foregroundColor(.secondary)
+                // Control-Center style circular icon platter
+                ZStack {
+                    Circle()
+                        .fill(Color.primary.opacity(0.12))
+                        .frame(width: 26, height: 26)
+
+                    if isConnecting {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .scaleEffect(0.45)
+                            .frame(width: 14, height: 14)
+                    } else {
+                        Image(systemName: "smartphone")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(showOffline ? .red : Color(red: 169/255, green: 169/255, blue: 169/255))
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(name)
+                        .font(.system(size: 13))
+                        .foregroundColor(.primary)
+                    if showOffline {
+                        Text("Offline")
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundColor(.red)
+                    }
+                }
+
                 Spacer()
             }
             .padding(.horizontal, 10)
@@ -376,6 +485,7 @@ struct OtherDeviceRow: View {
         }
         .buttonStyle(.plain)
         .onHover { h in hover = h }
+        .animation(.easeInOut(duration: 0.2), value: showOffline)
     }
 }
 
