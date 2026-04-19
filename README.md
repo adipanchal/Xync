@@ -8,32 +8,45 @@
 
 **Mirror, control, and manage your Android devices wirelessly from your Mac.**
 
-Powered by the incredible [scrcpy](https://github.com/Genymobile/scrcpy), Xync provides a beautiful, native macOS interface for managing your Android devices without touching a terminal.
+Powered by the incredible [scrcpy](https://github.com/Genymobile/scrcpy) and adb, Xync provides a beautiful, native macOS interface for managing your Android devices without touching a terminal.
 </div>
 
-## Wireless Devices
-<img src="assets/previews/wireless-devices-preview.png" alt="Xync App Preview" width="800">
+## Dashboard
+<img src="assets/previews/xync-dashboard.webp" alt="Xync App Preview" width="800">
 
-## Wired Devices
-<img src="assets/previews/wired-devices-preview.png" alt="Xync App Preview" width="800">
+## Mirroring
+<img src="assets/previews/xync-screen-mirroring.webp" alt="Xync App Preview" width="800">
 
 ## Samsung DeX
 <div>
   Maynot work on every samsung devices try at your own luck!
 </div>
-<img src="assets/previews/samsung-dex-preview.png" alt="Xync App Preview" width="800">
+<img src="assets/previews/xync-samsung-dex.webp" alt="Xync App Preview" width="800">
 
-## File Explorer (Beta)
-<img src="assets/previews/file-explorer-preview.png" alt="Xync App Preview" width="800">
+## File Explorer
+<img src="assets/previews/xync-file-explorer.webp" alt="Xync App Preview" width="800">
+<img src="assets/previews/xync-file-explorer-inner.webp" alt="Xync App Preview" width="800">
+
+## Live Clipboard
+<img src="assets/previews/xync-live-clipboard.gif" alt="Xync App Preview" width="800">
+
+## Send Files To Phone
+<img src="assets/previews/xync-send-to-phone.webp" alt="Xync App Preview" width="800">
+
+## Menu
+<img src="assets/previews/xync-menu.webp" alt="Xync App Preview" width="800">
 
 ## Features
 - **Wireless Mirroring**: Connect and mirror your phone over Wi-Fi with zero cable clutter. Built-in Connection Wizard makes TCP/IP setup a breeze.
 - **Wired Mirroring**: Low-latency, high-performance USB mirroring for gaming or intensive tasks.
-- **Samsung DeX Support**: Launch a dedicated DeX desktop environment instead of a phone mirror (requires supported Samsung device).
-- **Camera Passthrough**: Use your Android phone's high-quality rear or front camera directly on your Mac.
+- **Samsung DeX**: Launch a dedicated DeX desktop environment instead of a phone mirror (requires supported Samsung device).
+- **Device Camera**: Use your Android phone's high-quality rear or front camera directly on your Mac.
 - **Device Management**: Forget, disconnect, or connect saved devices easily with a click.
-- **Native macOS UI**: Built entirely in Swift/SwiftUI with macOS design paradigms (translucency, SF Symbols, native window handling).
-- **File Explorer**: Browse your Android device files directly from your Mac.
+- **Native macOS UI**: Built entirely in Swift/SwiftUI with macOS design paradigms.
+- **File Explorer**: Browse, manage, and download files from your Android device directly on your Mac.
+- **Live Clipboard Sync**: Instantly send your Mac's clipboard text to your phone with a single click.
+- **File Transfer**: Quickly push files from your Mac to your Android.
+- **Menu Bar Quick Actions**: Control your devices from the macOS menu bar for a seamless workflow.
 
 ## Prerequisites
 
@@ -68,6 +81,13 @@ By default, routers change your phone's IP address every few days, meaning you'd
 
 ---
 
+## License
+
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
+
+---
+
 **Made by [Aditya Panchal](https://github.com/adipanchal)**
 
 *Copyright © 2026 Aditya Panchal. All rights reserved.*
+
