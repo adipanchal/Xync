@@ -77,7 +77,7 @@ By default, routers change your phone's IP address every few days, meaning you'd
 2. Download the latest `Xync.dmg`.
 3. Drag the **Xync** application into your `Applications` folder.
 
-*(Note: Because this is an indie app, macOS Gatekeeper may block the first launch. Simply **Right-click** the Xync app, and choose **Open**, then click "Open" on the warning dialog to bypass this once.)*
+*(Note: First launch may need Open Anyway in macOS Privacy & Security because the app is not yet signed with a paid Apple Developer certificate.)*
 
 ---
 
