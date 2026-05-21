@@ -1,0 +1,836 @@
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="A product of emergent.sh">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+    <link rel="icon" href="https://github.com/adipanchal/Xync/raw/main/xync/Assets.xcassets/AppIcon.appiconset/mac_128.png">
+    <meta name="description" content="Xync — Mirror, control, and manage your Android devices wirelessly from your Mac. A beautiful native macOS app powered by scrcpy and adb.">
+    <title>Xync — Mirror Android on Mac, wirelessly.</title>
+
+    <link rel="stylesheet" href="assets/css/output.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+  <body>
+    <div id="root">
+      <div class="App">
+        <div class="min-h-screen bg-[#FAFAFA] font-body text-[#09090B]" data-testid="landing-root">
+          <header data-testid="site-header" class="fixed top-0 inset-x-0 z-50 transition-all duration-300 bg-transparent border-b border-transparent">
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 h-16 flex items-center justify-between">
+              <a href="#top" data-testid="header-logo" class="flex items-center gap-2.5 group"><img alt="Xync" class="w-8 h-8 rounded-[8px] shadow-sm group-hover:scale-105 transition-transform" src="https://github.com/adipanchal/Xync/raw/main/xync/Assets.xcassets/AppIcon.appiconset/mac_128.png"><span class="font-display text-xl font-medium tracking-tight text-[#09090B]">Xync</span></a>
+              <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-[#52525B]">
+                <a href="#features" data-testid="nav-features" class="hover:text-[#09090B] transition-colors">Features</a><a href="#screenshots" data-testid="nav-screenshots" class="hover:text-[#09090B] transition-colors">Screenshots</a><a href="#install" data-testid="nav-install" class="hover:text-[#09090B] transition-colors">Install</a><a href="#faq" data-testid="nav-faq" class="hover:text-[#09090B] transition-colors">FAQ</a>
+              </nav>
+              <div class="flex items-center gap-2.5">
+                <a data-testid="header-github-btn" href="https://github.com/adipanchal/Xync" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium text-[#52525B] hover:text-[#09090B] transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-github w-4 h-4" aria-hidden="true">
+                    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+                    <path d="M9 18c-4.51 2-5-2-7-2"></path></svg>GitHub</a><a data-testid="header-download-btn" href="assets/downloads/Xync.dmg" download="Xync.dmg" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#09090B] text-white text-sm font-medium hover:bg-zinc-800 transition-all hover:shadow-lg hover:shadow-zinc-900/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-to-line w-4 h-4" aria-hidden="true">
+                    <path d="M12 17V3"></path>
+                    <path d="m6 11 6 6 6-6"></path>
+                    <path d="M19 21H5"></path></svg>Download</a>
+              </div>
+            </div>
+          </header>
+          <main>
+            <section id="top" data-testid="hero-section" class="relative pt-32 sm:pt-40 pb-20 overflow-hidden">
+              <div aria-hidden="true" class="absolute inset-x-0 top-24 h-[600px] hero-glow pointer-events-none"></div>
+              <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative">
+                <div class="flex items-center gap-2 rise-in" style="animation-delay: 0.05s">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-zinc-200/80 text-xs font-medium text-[#52525B] shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-apple w-3.5 h-3.5" aria-hidden="true">
+                      <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"></path>
+                      <path d="M10 2c1 .5 2 2 2 5"></path></svg>Native macOS app · v1.3</span><span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-zinc-200/80 text-xs font-medium text-[#52525B] shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Powered by scrcpy + adb</span>
+                </div>
+                <h1 data-testid="hero-headline" class="font-display mt-8 text-5xl sm:text-6xl lg:text-7xl xl:text-[5.5rem] font-light tracking-tighter leading-[0.95] text-[#09090B] rise-in" style="animation-delay: 0.15s">
+                  Mirror, control,<br>and manage your<br><span class="italic font-normal text-[#0A84FF]">Android</span>
+                  from your<span style="display: contents"> </span><span class="inline-flex items-center gap-3"><span class="font-medium">Mac.</span></span>
+                </h1>
+                <div class="grid md:grid-cols-12 gap-8 mt-10 items-start">
+                  <p class="md:col-span-7 text-lg sm:text-xl text-[#52525B] leading-relaxed max-w-2xl rise-in" style="animation-delay: 0.25s">
+                    Xync is a beautiful, native macOS app that brings your
+                    Android phone to your desktop — wirelessly. Mirror your
+                    screen, sync your clipboard, transfer files, and launch
+                    Samsung DeX, all without touching a terminal.
+                  </p>
+                  <div class="md:col-span-5 flex flex-col sm:flex-row md:flex-col gap-3 rise-in" style="animation-delay: 0.35s">
+                    <a data-testid="hero-download-btn" href="assets/downloads/Xync.dmg" download="Xync.dmg" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#0A84FF] text-white font-medium hover:bg-[#0070E0] transition-all hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-0.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-to-line w-5 h-5" aria-hidden="true">
+                        <path d="M12 17V3"></path>
+                        <path d="m6 11 6 6 6-6"></path>
+                        <path d="M19 21H5"></path></svg>Download for macOS<span class="text-xs opacity-80 font-mono-tight ml-1">.dmg</span></a><a data-testid="hero-github-btn" href="https://github.com/adipanchal/Xync" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white border border-zinc-200 text-[#09090B] font-medium hover:bg-zinc-50 transition-all hover:shadow-md hover:-translate-y-0.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-github w-5 h-5" aria-hidden="true">
+                        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+                        <path d="M9 18c-4.51 2-5-2-7-2"></path></svg>View on GitHub</a>
+                  </div>
+                </div>
+                <div class="relative mt-20 rise-in" data-testid="hero-screenshot" style="animation-delay: 0.5s">
+                  <div class="absolute -inset-x-12 -inset-y-8 bg-gradient-to-b from-transparent via-white/60 to-transparent blur-2xl" aria-hidden="true"></div>
+                  <div class="relative rounded-3xl overflow-hidden shadow-[0_30px_80px_-20px_rgba(10,132,255,0.25),0_0_0_1px_rgba(0,0,0,0.04)] bg-white">
+                    <img alt="Xync Dashboard" class="w-full h-auto block" loading="eager" src="https://github.com/adipanchal/Xync/raw/main/assets/previews/xync-dashboard.webp">
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section data-testid="feature-ticker" class="relative py-10 border-y border-zinc-200/70 bg-white/40 backdrop-blur-sm overflow-hidden" aria-hidden="true">
+              <div class="ticker-track w-max flex gap-12 whitespace-nowrap will-change-transform">
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Wireless Mirroring</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Live Clipboard</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Samsung DeX</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>File Explorer</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>USB Mirroring</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Menu Bar Controls</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Device Camera</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Drag-to-Send Files</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Native SwiftUI</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Zero Terminal</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Wireless Mirroring</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Live Clipboard</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Samsung DeX</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>File Explorer</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>USB Mirroring</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Menu Bar Controls</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Device Camera</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Drag-to-Send Files</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Native SwiftUI</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+                <div class="flex items-center gap-12 font-display text-2xl font-light text-[#52525B] tracking-tight">
+                  <span>Zero Terminal</span><span class="text-[#0A84FF]/40 text-base">◆</span>
+                </div>
+              </div>
+            </section>
+            <section id="features" data-testid="features-section" class="py-24 sm:py-32">
+              <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="max-w-3xl mb-16">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#A1A1AA]">
+                    Features
+                  </p>
+                  <h2 class="font-display mt-3 text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-[#09090B] leading-tight">
+                    Everything your phone does,<br>now on your Mac.
+                  </h2>
+                  <p class="mt-5 text-lg text-[#52525B] max-w-2xl">
+                    Designed entirely in Swift and SwiftUI for native
+                    performance. No clunky Java wrappers. No terminal. Just your
+                    phone — but elegant.
+                  </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-7">
+                  <div data-testid="bento-mirroring" class="relative overflow-hidden bg-white rounded-3xl border border-zinc-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] md:col-span-8 md:row-span-2 p-8 lg:p-10 flex flex-col">
+                    <div class="flex items-center gap-2 text-[#0A84FF] text-sm font-medium">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wifi w-4 h-4" aria-hidden="true">
+                        <path d="M12 20h.01"></path>
+                        <path d="M2 8.82a15 15 0 0 1 20 0"></path>
+                        <path d="M5 12.859a10 10 0 0 1 14 0"></path>
+                        <path d="M8.5 16.429a5 5 0 0 1 7 0"></path></svg>Wireless &amp; Wired
+                    </div>
+                    <h3 class="font-display mt-3 text-2xl sm:text-3xl font-medium tracking-tight text-[#09090B]">
+                      Mirror your Android in stunning quality.
+                    </h3>
+                    <p class="mt-3 text-[#52525B] max-w-md">
+                      Low-latency USB mirroring for gaming, or zero-cable Wi-Fi
+                      for everyday flow. A built-in Connection Wizard handles
+                      TCP/IP setup in seconds.
+                    </p>
+                    <div class="mt-8 -mx-2 -mb-2 rounded-2xl overflow-hidden border border-zinc-100">
+                      <img alt="Screen Mirroring" class="w-full h-auto block" loading="lazy" src="https://github.com/adipanchal/Xync/raw/main/assets/previews/xync-screen-mirroring.webp">
+                    </div>
+                  </div>
+                  <div data-testid="bento-dex" class="relative overflow-hidden bg-white rounded-3xl border border-zinc-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] md:col-span-4 md:row-span-2 p-8 lg:p-10 flex flex-col">
+                    <div class="flex items-center gap-2 text-[#0A84FF] text-sm font-medium">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-monitor w-4 h-4" aria-hidden="true">
+                        <rect width="20" height="14" x="2" y="3" rx="2"></rect>
+                        <line x1="8" x2="16" y1="21" y2="21"></line>
+                        <line x1="12" x2="12" y1="17" y2="21"></line></svg>Samsung DeX
+                    </div>
+                    <h3 class="font-display mt-3 text-2xl font-medium tracking-tight text-[#09090B]">
+                      Launch a full desktop, not just a phone.
+                    </h3>
+                    <p class="mt-3 text-[#52525B]">
+                      For supported Samsung devices, Xync boots straight into
+                      the DeX desktop environment — a full Android workstation
+                      inside a window on your Mac.
+                    </p>
+                    <div class="mt-auto pt-8 -mx-2 -mb-2 rounded-2xl overflow-hidden border border-zinc-100">
+                      <img alt="Samsung DeX" class="w-full h-auto block" loading="lazy" src="https://github.com/adipanchal/Xync/raw/main/assets/previews/xync-samsung-dex.webp">
+                    </div>
+                  </div>
+                  <div data-testid="bento-clipboard" class="relative overflow-hidden bg-white rounded-3xl border border-zinc-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] md:col-span-4 p-8 flex flex-col">
+                    <div class="flex items-center gap-2 text-[#0A84FF] text-sm font-medium">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard w-4 h-4" aria-hidden="true">
+                        <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path></svg>Live Clipboard
+                    </div>
+                    <h3 class="font-display mt-3 text-xl font-medium tracking-tight">
+                      Paste from Mac to phone.
+                    </h3>
+                    <p class="mt-2 text-[#52525B] text-sm">
+                      One click sends your Mac's clipboard text to your phone as
+                      keyboard input.
+                    </p>
+                    <div class="mt-5 -mx-2 -mb-2 rounded-2xl overflow-hidden border border-zinc-100 bg-zinc-50">
+                      <img alt="Live Clipboard" class="w-full h-auto block" loading="lazy" src="https://github.com/adipanchal/Xync/raw/main/assets/previews/xync-live-clipboard.gif">
+                    </div>
+                  </div>
+                  <div data-testid="bento-file-explorer" class="relative overflow-hidden bg-white rounded-3xl border border-zinc-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] md:col-span-4 p-8 flex flex-col">
+                    <div class="flex items-center gap-2 text-[#0A84FF] text-sm font-medium">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-open w-4 h-4" aria-hidden="true">
+                        <path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"></path></svg>File Explorer
+                    </div>
+                    <h3 class="font-display mt-3 text-xl font-medium tracking-tight">
+                      Browse phone files. Natively.
+                    </h3>
+                    <p class="mt-2 text-[#52525B] text-sm">
+                      Copy, cut, paste, delete — even auto-jump into SD card
+                      storage. Finder-like, finally.
+                    </p>
+                    <div class="mt-5 -mx-2 -mb-2 rounded-2xl overflow-hidden border border-zinc-100">
+                      <img alt="File Explorer" class="w-full h-auto block" loading="lazy" src="https://github.com/adipanchal/Xync/raw/main/assets/previews/xync-file-explorer.webp">
+                    </div>
+                  </div>
+                  <div data-testid="bento-send" class="relative overflow-hidden bg-white rounded-3xl border border-zinc-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] md:col-span-4 p-8 flex flex-col">
+                    <div class="flex items-center gap-2 text-[#0A84FF] text-sm font-medium">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload w-4 h-4" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" x2="12" y1="3" y2="15"></line></svg>Send to Phone
+                    </div>
+                    <h3 class="font-display mt-3 text-xl font-medium tracking-tight">
+                      Drag a file. Done.
+                    </h3>
+                    <p class="mt-2 text-[#52525B] text-sm">
+                      Push files from your Mac to Android without cables or
+                      third-party apps.
+                    </p>
+                    <div class="mt-5 -mx-2 -mb-2 rounded-2xl overflow-hidden border border-zinc-100">
+                      <img alt="Send to phone" class="w-full h-auto block" loading="lazy" src="https://github.com/adipanchal/Xync/raw/main/assets/previews/xync-send-to-phone.webp">
+                    </div>
+                  </div>
+                  <div data-testid="bento-menubar" class="relative overflow-hidden bg-white rounded-3xl border border-zinc-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] md:col-span-7 p-8 lg:p-10 flex flex-col md:flex-row gap-8">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 text-[#0A84FF] text-sm font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-grid w-4 h-4" aria-hidden="true">
+                          <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+                          <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+                          <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+                          <rect width="7" height="7" x="3" y="14" rx="1"></rect></svg>Menu Bar
+                      </div>
+                      <h3 class="font-display mt-3 text-2xl font-medium tracking-tight">
+                        Quick actions, one click away.
+                      </h3>
+                      <p class="mt-3 text-[#52525B]">
+                        Mirror, Files, Send Clip, Upload — surfaced right from
+                        your macOS menu bar. Hide the dock icon, work
+                        distraction-free.
+                      </p>
+                    </div>
+                    <div class="md:w-[48%] rounded-2xl overflow-hidden border border-zinc-100">
+                      <img alt="Menu Bar" class="w-full h-auto block" loading="lazy" src="https://github.com/adipanchal/Xync/raw/main/assets/previews/xync-menu.webp">
+                    </div>
+                  </div>
+                  <div data-testid="bento-camera" class="relative overflow-hidden bg-white rounded-3xl border border-zinc-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] md:col-span-5 p-8 lg:p-10 flex flex-col justify-between">
+                    <div>
+                      <div class="flex items-center gap-2 text-[#0A84FF] text-sm font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-camera w-4 h-4" aria-hidden="true">
+                          <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
+                          <circle cx="12" cy="13" r="3"></circle></svg>Device Camera
+                      </div>
+                      <h3 class="font-display mt-3 text-2xl font-medium tracking-tight">
+                        Use your phone's camera as a webcam.
+                      </h3>
+                      <p class="mt-3 text-[#52525B]">
+                        Tap into your Android's high-quality rear or front
+                        sensors — directly inside macOS apps.
+                      </p>
+                    </div>
+                    <div class="mt-8 flex items-center gap-2 text-xs font-mono-tight text-[#A1A1AA]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-smartphone w-3.5 h-3.5" aria-hidden="true">
+                        <rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect>
+                        <path d="M12 18h.01"></path></svg>Rear · Front · Auto-detect
+                    </div>
+                  </div>
+                  <div data-testid="bento-native" class="relative overflow-hidden bg-white rounded-3xl border border-zinc-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] md:col-span-6 p-8 lg:p-10">
+                    <div class="flex items-center gap-2 text-[#0A84FF] text-sm font-medium">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-apple w-4 h-4" aria-hidden="true">
+                        <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"></path>
+                        <path d="M10 2c1 .5 2 2 2 5"></path></svg>Native macOS
+                    </div>
+                    <h3 class="font-display mt-3 text-2xl font-medium tracking-tight">
+                      Built in Swift. Feels like Finder.
+                    </h3>
+                    <p class="mt-3 text-[#52525B]">
+                      100% Swift / SwiftUI. Adheres to macOS design paradigms —
+                      vibrancy, sidebar layouts, menu-bar agents, and full
+                      Retina output. No Electron. No bloat.
+                    </p>
+                    <div class="mt-6 flex flex-wrap gap-2 text-xs font-mono-tight">
+                      <span class="px-2.5 py-1 rounded-md bg-zinc-100 text-[#52525B]">Swift 5.9</span><span class="px-2.5 py-1 rounded-md bg-zinc-100 text-[#52525B]">SwiftUI</span><span class="px-2.5 py-1 rounded-md bg-zinc-100 text-[#52525B]">AppKit</span><span class="px-2.5 py-1 rounded-md bg-zinc-100 text-[#52525B]">macOS 13+</span>
+                    </div>
+                  </div>
+                  <div data-testid="bento-wired" class="relative overflow-hidden bg-white rounded-3xl border border-zinc-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] md:col-span-6 p-8 lg:p-10">
+                    <div class="flex items-center gap-2 text-[#0A84FF] text-sm font-medium">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cable w-4 h-4" aria-hidden="true">
+                        <path d="M17 21v-2a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1"></path>
+                        <path d="M19 15V6.5a1 1 0 0 0-7 0v11a1 1 0 0 1-7 0V9"></path>
+                        <path d="M21 21v-2h-4"></path>
+                        <path d="M3 5h4V3"></path>
+                        <path d="M7 5a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1V3"></path></svg>USB Mode
+                    </div>
+                    <h3 class="font-display mt-3 text-2xl font-medium tracking-tight">
+                      Plug in. Play games. Lossless.
+                    </h3>
+                    <p class="mt-3 text-[#52525B]">
+                      When latency matters most, switch to USB for high-FPS,
+                      low-latency mirroring — ideal for mobile gaming, screen
+                      recording, and intensive workflows.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section id="screenshots" data-testid="screenshots-section" class="py-24 sm:py-32 bg-white border-y border-zinc-100">
+              <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#A1A1AA]">
+                      A closer look
+                    </p>
+                    <h2 class="font-display mt-3 text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">
+                      Built for the way Mac feels.
+                    </h2>
+                  </div>
+                  <p class="md:max-w-sm text-[#52525B]">
+                    Every surface, transition, and pixel respects macOS
+                    conventions — because consistency is what makes great
+                    software disappear.
+                  </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+                  <figure data-testid="screenshot-0" class="group">
+                    <div class="relative rounded-3xl overflow-hidden bg-[#FAFAFA] border border-zinc-200/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+                      <img alt="Dashboard" class="w-full h-auto block group-hover:scale-[1.015] transition-transform duration-500" loading="lazy" src="https://github.com/adipanchal/Xync/raw/main/assets/previews/xync-dashboard.webp">
+                    </div>
+                    <figcaption class="mt-4 flex items-baseline justify-between gap-4">
+                      <h3 class="font-display text-xl font-medium tracking-tight">
+                        Dashboard
+                      </h3>
+                      <p class="text-sm text-[#52525B] text-right max-w-xs">
+                        All your saved devices, one elegant view.
+                      </p>
+                    </figcaption>
+                  </figure>
+                  <figure data-testid="screenshot-1" class="group">
+                    <div class="relative rounded-3xl overflow-hidden bg-[#FAFAFA] border border-zinc-200/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+                      <img alt="Screen Mirroring" class="w-full h-auto block group-hover:scale-[1.015] transition-transform duration-500" loading="lazy" src="https://github.com/adipanchal/Xync/raw/main/assets/previews/xync-screen-mirroring.webp">
+                    </div>
+                    <figcaption class="mt-4 flex items-baseline justify-between gap-4">
+                      <h3 class="font-display text-xl font-medium tracking-tight">
+                        Screen Mirroring
+                      </h3>
+                      <p class="text-sm text-[#52525B] text-right max-w-xs">
+                        Pixel-perfect mirroring, hardware-accelerated.
+                      </p>
+                    </figcaption>
+                  </figure>
+                  <figure data-testid="screenshot-2" class="group">
+                    <div class="relative rounded-3xl overflow-hidden bg-[#FAFAFA] border border-zinc-200/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+                      <img alt="File Explorer · Inside" class="w-full h-auto block group-hover:scale-[1.015] transition-transform duration-500" loading="lazy" src="https://github.com/adipanchal/Xync/raw/main/assets/previews/xync-file-explorer-inner.webp">
+                    </div>
+                    <figcaption class="mt-4 flex items-baseline justify-between gap-4">
+                      <h3 class="font-display text-xl font-medium tracking-tight">
+                        File Explorer · Inside
+                      </h3>
+                      <p class="text-sm text-[#52525B] text-right max-w-xs">
+                        Drill into folders just like Finder.
+                      </p>
+                    </figcaption>
+                  </figure>
+                  <figure data-testid="screenshot-3" class="group">
+                    <div class="relative rounded-3xl overflow-hidden bg-[#FAFAFA] border border-zinc-200/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+                      <img alt="Samsung DeX" class="w-full h-auto block group-hover:scale-[1.015] transition-transform duration-500" loading="lazy" src="https://github.com/adipanchal/Xync/raw/main/assets/previews/xync-samsung-dex.webp">
+                    </div>
+                    <figcaption class="mt-4 flex items-baseline justify-between gap-4">
+                      <h3 class="font-display text-xl font-medium tracking-tight">
+                        Samsung DeX
+                      </h3>
+                      <p class="text-sm text-[#52525B] text-right max-w-xs">
+                        A full Android desktop on macOS.
+                      </p>
+                    </figcaption>
+                  </figure>
+                </div>
+              </div>
+            </section>
+            <section id="install" data-testid="install-section" class="py-24 sm:py-32">
+              <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="max-w-3xl mb-14">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#A1A1AA]">
+                    Get started
+                  </p>
+                  <h2 class="font-display mt-3 text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">
+                    Four steps. No terminal.
+                  </h2>
+                  <p class="mt-5 text-lg text-[#52525B]">
+                    Xync's built-in Setup Wizard auto-downloads and
+                    configures<span style="display: contents"> </span><code class="font-mono-tight text-[15px] bg-zinc-100 text-[#09090B] px-1.5 py-0.5 rounded">scrcpy</code><span style="display: contents"> </span>and<span style="display: contents">
+                    </span><code class="font-mono-tight text-[15px] bg-zinc-100 text-[#09090B] px-1.5 py-0.5 rounded">adb</code><span style="display: contents"> </span>on first launch.
+                  </p>
+                </div>
+                <ol class="space-y-3">
+                  <li data-testid="install-step-01" class="group relative grid grid-cols-12 gap-6 items-start p-6 sm:p-8 rounded-3xl border border-zinc-200/60 bg-white hover:bg-[#FAFAFA] transition-colors">
+                    <div class="col-span-12 sm:col-span-2 flex items-center gap-3">
+                      <span class="font-display text-5xl sm:text-6xl font-light text-[#0A84FF]/15 group-hover:text-[#0A84FF]/30 transition-colors leading-none">01</span>
+                    </div>
+                    <div class="col-span-12 sm:col-span-1 hidden sm:flex items-start pt-2">
+                      <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[#0A84FF]/10 text-[#0A84FF]"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download w-5 h-5" aria-hidden="true">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="7 10 12 15 17 10"></polyline>
+                          <line x1="12" x2="12" y1="15" y2="3"></line></svg></span>
+                    </div>
+                    <div class="col-span-12 sm:col-span-9">
+                      <h3 class="font-display text-xl sm:text-2xl font-medium tracking-tight text-[#09090B]">
+                        Download the .dmg
+                      </h3>
+                      <p class="mt-2 text-[#52525B] max-w-2xl leading-relaxed">
+                        Grab the latest Xync release straight from GitHub. Free,
+                        open-source, Apache-2.0 licensed.
+                      </p>
+                    </div>
+                  </li>
+                  <li data-testid="install-step-02" class="group relative grid grid-cols-12 gap-6 items-start p-6 sm:p-8 rounded-3xl border border-zinc-200/60 bg-white hover:bg-[#FAFAFA] transition-colors">
+                    <div class="col-span-12 sm:col-span-2 flex items-center gap-3">
+                      <span class="font-display text-5xl sm:text-6xl font-light text-[#0A84FF]/15 group-hover:text-[#0A84FF]/30 transition-colors leading-none">02</span>
+                    </div>
+                    <div class="col-span-12 sm:col-span-1 hidden sm:flex items-start pt-2">
+                      <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[#0A84FF]/10 text-[#0A84FF]"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-input w-5 h-5" aria-hidden="true">
+                          <path d="M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1"></path>
+                          <path d="M2 13h10"></path>
+                          <path d="m9 16 3-3-3-3"></path></svg></span>
+                    </div>
+                    <div class="col-span-12 sm:col-span-9">
+                      <h3 class="font-display text-xl sm:text-2xl font-medium tracking-tight text-[#09090B]">
+                        Drag to Applications
+                      </h3>
+                      <p class="mt-2 text-[#52525B] max-w-2xl leading-relaxed">
+                        Standard macOS install. On first launch you may need to
+                        choose Open Anyway in Privacy &amp; Security — the app
+                        isn't yet signed with a paid Developer certificate.
+                      </p>
+                    </div>
+                  </li>
+                  <li data-testid="install-step-03" class="group relative grid grid-cols-12 gap-6 items-start p-6 sm:p-8 rounded-3xl border border-zinc-200/60 bg-white hover:bg-[#FAFAFA] transition-colors">
+                    <div class="col-span-12 sm:col-span-2 flex items-center gap-3">
+                      <span class="font-display text-5xl sm:text-6xl font-light text-[#0A84FF]/15 group-hover:text-[#0A84FF]/30 transition-colors leading-none">03</span>
+                    </div>
+                    <div class="col-span-12 sm:col-span-1 hidden sm:flex items-start pt-2">
+                      <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[#0A84FF]/10 text-[#0A84FF]"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-smartphone w-5 h-5" aria-hidden="true">
+                          <rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect>
+                          <path d="M12 18h.01"></path></svg></span>
+                    </div>
+                    <div class="col-span-12 sm:col-span-9">
+                      <h3 class="font-display text-xl sm:text-2xl font-medium tracking-tight text-[#09090B]">
+                        Enable USB Debugging on Android
+                      </h3>
+                      <p class="mt-2 text-[#52525B] max-w-2xl leading-relaxed">
+                        Tap Build Number 7 times → Developer Options → enable
+                        USB Debugging. Connect once via USB and accept the
+                        prompt on your phone.
+                      </p>
+                    </div>
+                  </li>
+                  <li data-testid="install-step-04" class="group relative grid grid-cols-12 gap-6 items-start p-6 sm:p-8 rounded-3xl border border-zinc-200/60 bg-white hover:bg-[#FAFAFA] transition-colors">
+                    <div class="col-span-12 sm:col-span-2 flex items-center gap-3">
+                      <span class="font-display text-5xl sm:text-6xl font-light text-[#0A84FF]/15 group-hover:text-[#0A84FF]/30 transition-colors leading-none">04</span>
+                    </div>
+                    <div class="col-span-12 sm:col-span-1 hidden sm:flex items-start pt-2">
+                      <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[#0A84FF]/10 text-[#0A84FF]"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap w-5 h-5" aria-hidden="true">
+                          <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg></span>
+                    </div>
+                    <div class="col-span-12 sm:col-span-9">
+                      <h3 class="font-display text-xl sm:text-2xl font-medium tracking-tight text-[#09090B]">
+                        Go wireless. Forever.
+                      </h3>
+                      <p class="mt-2 text-[#52525B] max-w-2xl leading-relaxed">
+                        Use the Connection Wizard once, set a Static IP on your
+                        phone, and from then on connect cable-free from Saved
+                        Devices.
+                      </p>
+                    </div>
+                  </li>
+                </ol>
+                <div class="mt-10 p-6 sm:p-8 rounded-3xl bg-[#09090B] text-white relative overflow-hidden">
+                  <div class="absolute -right-12 -bottom-12 w-64 h-64 rounded-full bg-[#0A84FF]/20 blur-3xl" aria-hidden="true"></div>
+                  <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/40">
+                    Pro tip
+                  </p>
+                  <h3 class="font-display mt-2 text-xl sm:text-2xl font-medium tracking-tight">
+                    Set a Static IP on your phone for 1-click reconnects.
+                  </h3>
+                  <p class="mt-3 text-white/70 max-w-2xl leading-relaxed">
+                    Android → Wi-Fi Settings → tap the gear icon next to your
+                    network → change<span style="display: contents"> </span><span class="font-mono-tight">IP settings</span> from<span style="display: contents">
+                    </span><span class="font-mono-tight">DHCP</span> to<span style="display: contents">
+                    </span><span class="font-mono-tight">Static</span>. Run the Wizard
+                    one final time and never plug the cable in again.
+                  </p>
+                </div>
+              </div>
+            </section>
+            <section id="faq" data-testid="faq-section" class="py-24 sm:py-32 bg-white border-y border-zinc-100">
+              <div class="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="grid md:grid-cols-12 gap-8 md:gap-16">
+                  <div class="md:col-span-4">
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#A1A1AA]">
+                      FAQ
+                    </p>
+                    <h2 class="font-display mt-3 text-3xl sm:text-4xl font-medium tracking-tight sticky top-28">
+                      Questions,<br>answered.
+                    </h2>
+                  </div>
+                  <div class="md:col-span-8">
+                    <div class="w-full" data-testid="faq-accordion" data-orientation="vertical">
+                      <div data-state="closed" data-orientation="vertical" class="border-b border-zinc-200/80" data-testid="faq-item-0">
+                        <h3 data-orientation="vertical" data-state="closed" class="flex">
+                          <button type="button" aria-controls="radix-_r_1_" aria-expanded="false" data-state="closed" data-orientation="vertical" id="radix-_r_0_" class="flex flex-1 items-center justify-between transition-all  font-display text-lg sm:text-xl font-medium tracking-tight text-left hover:no-underline py-6 group" data-radix-collection-item="">
+                            Do I need to install scrcpy or adb manually?<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" aria-hidden="true">
+                              <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                          </button>
+                        </h3>
+                        <div data-state="closed" id="radix-_r_1_" hidden="" role="region" aria-labelledby="radix-_r_0_" data-orientation="vertical" class="accordion-grid data-[state=open]:grid-open data-[state=closed]:grid-closed"><div><div class="pb-4 pt-0 overflow-hidden"><p class="text-[#52525B] font-body leading-relaxed">No. On first launch, Xync's built-in Setup Wizard automatically downloads and configures both scrcpy and adb in the background. You never need to touch a terminal.</p></div></div></div>
+                      </div>
+                      <div data-state="closed" data-orientation="vertical" class="border-b border-zinc-200/80" data-testid="faq-item-1">
+                        <h3 data-orientation="vertical" data-state="closed" class="flex">
+                          <button type="button" aria-controls="radix-_r_3_" aria-expanded="false" data-state="closed" data-orientation="vertical" id="radix-_r_2_" class="flex flex-1 items-center justify-between transition-all  font-display text-lg sm:text-xl font-medium tracking-tight text-left hover:no-underline py-6 group" data-radix-collection-item="">
+                            Which macOS versions are supported?<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" aria-hidden="true">
+                              <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                          </button>
+                        </h3>
+                        <div data-state="closed" id="radix-_r_3_" hidden="" role="region" aria-labelledby="radix-_r_2_" data-orientation="vertical" class="accordion-grid data-[state=open]:grid-open data-[state=closed]:grid-closed"><div><div class="pb-4 pt-0 overflow-hidden"><p class="text-[#52525B] font-body leading-relaxed">Xync targets macOS 13 (Ventura) and newer. It runs natively on both Apple Silicon and Intel Macs.</p></div></div></div>
+                      </div>
+                      <div data-state="closed" data-orientation="vertical" class="border-b border-zinc-200/80" data-testid="faq-item-2">
+                        <h3 data-orientation="vertical" data-state="closed" class="flex">
+                          <button type="button" aria-controls="radix-_r_5_" aria-expanded="false" data-state="closed" data-orientation="vertical" id="radix-_r_4_" class="flex flex-1 items-center justify-between transition-all  font-display text-lg sm:text-xl font-medium tracking-tight text-left hover:no-underline py-6 group" data-radix-collection-item="">
+                            Why does macOS warn that the app is from an
+                            unidentified developer?<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" aria-hidden="true">
+                              <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                          </button>
+                        </h3>
+                        <div data-state="closed" id="radix-_r_5_" hidden="" role="region" aria-labelledby="radix-_r_4_" data-orientation="vertical" class="accordion-grid data-[state=open]:grid-open data-[state=closed]:grid-closed"><div><div class="pb-4 pt-0 overflow-hidden"><p class="text-[#52525B] font-body leading-relaxed">Xync is open-source and not yet signed with a paid Apple Developer certificate. On first launch, open System Settings → Privacy &amp; Security and choose Open Anyway. Subsequent launches will work normally.</p></div></div></div>
+                      </div>
+                      <div data-state="closed" data-orientation="vertical" class="border-b border-zinc-200/80" data-testid="faq-item-3">
+                        <h3 data-orientation="vertical" data-state="closed" class="flex">
+                          <button type="button" aria-controls="radix-_r_7_" aria-expanded="false" data-state="closed" data-orientation="vertical" id="radix-_r_6_" class="flex flex-1 items-center justify-between transition-all  font-display text-lg sm:text-xl font-medium tracking-tight text-left hover:no-underline py-6 group" data-radix-collection-item="">
+                            Does wireless mirroring require both devices on the
+                            same Wi-Fi?<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" aria-hidden="true">
+                              <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                          </button>
+                        </h3>
+                        <div data-state="closed" id="radix-_r_7_" hidden="" role="region" aria-labelledby="radix-_r_6_" data-orientation="vertical" class="accordion-grid data-[state=open]:grid-open data-[state=closed]:grid-closed"><div><div class="pb-4 pt-0 overflow-hidden"><p class="text-[#52525B] font-body leading-relaxed">Yes — your Mac and Android device must be on the exact same Wi-Fi network. We recommend setting a Static IP on your phone for instant 1-click reconnects from the Saved Devices list.</p></div></div></div>
+                      </div>
+                      <div data-state="closed" data-orientation="vertical" class="border-b border-zinc-200/80" data-testid="faq-item-4">
+                        <h3 data-orientation="vertical" data-state="closed" class="flex">
+                          <button type="button" aria-controls="radix-_r_9_" aria-expanded="false" data-state="closed" data-orientation="vertical" id="radix-_r_8_" class="flex flex-1 items-center justify-between transition-all  font-display text-lg sm:text-xl font-medium tracking-tight text-left hover:no-underline py-6 group" data-radix-collection-item="">
+                            Does Samsung DeX work on every Samsung phone?<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" aria-hidden="true">
+                              <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                          </button>
+                        </h3>
+                        <div data-state="closed" id="radix-_r_9_" hidden="" role="region" aria-labelledby="radix-_r_8_" data-orientation="vertical" class="accordion-grid data-[state=open]:grid-open data-[state=closed]:grid-closed"><div><div class="pb-4 pt-0 overflow-hidden"><p class="text-[#52525B] font-body leading-relaxed">DeX requires a Samsung device that supports it (most flagship Galaxy phones from S8 onward). On unsupported models, Xync falls back to standard mirroring.</p></div></div></div>
+                      </div>
+                      <div data-state="closed" data-orientation="vertical" class="border-b border-zinc-200/80" data-testid="faq-item-5">
+                        <h3 data-orientation="vertical" data-state="closed" class="flex">
+                          <button type="button" aria-controls="radix-_r_b_" aria-expanded="false" data-state="closed" data-orientation="vertical" id="radix-_r_a_" class="flex flex-1 items-center justify-between transition-all  font-display text-lg sm:text-xl font-medium tracking-tight text-left hover:no-underline py-6 group" data-radix-collection-item="">
+                            Is Xync free? What's the license?<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" aria-hidden="true">
+                              <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                          </button>
+                        </h3>
+                        <div data-state="closed" id="radix-_r_b_" hidden="" role="region" aria-labelledby="radix-_r_a_" data-orientation="vertical" class="accordion-grid data-[state=open]:grid-open data-[state=closed]:grid-closed"><div><div class="pb-4 pt-0 overflow-hidden"><p class="text-[#52525B] font-body leading-relaxed">Xync is 100% free and open-source under the Apache 2.0 License. Source code is on GitHub — contributions, issues, and stars are very welcome.</p></div></div></div>
+                      </div>
+                      <div data-state="closed" data-orientation="vertical" class="border-b border-zinc-200/80" data-testid="faq-item-6">
+                        <h3 data-orientation="vertical" data-state="closed" class="flex">
+                          <button type="button" aria-controls="radix-_r_d_" aria-expanded="false" data-state="closed" data-orientation="vertical" id="radix-_r_c_" class="flex flex-1 items-center justify-between transition-all  font-display text-lg sm:text-xl font-medium tracking-tight text-left hover:no-underline py-6 group" data-radix-collection-item="">
+                            Can I transfer files in both directions?<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" aria-hidden="true">
+                              <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                          </button>
+                        </h3>
+                        <div data-state="closed" id="radix-_r_d_" hidden="" role="region" aria-labelledby="radix-_r_c_" data-orientation="vertical" class="accordion-grid data-[state=open]:grid-open data-[state=closed]:grid-closed"><div><div class="pb-4 pt-0 overflow-hidden"><p class="text-[#52525B] font-body leading-relaxed">Yes. Push files from Mac to Android with one click, and use the File Explorer to download files from your phone to your Mac with full copy/cut/paste/delete support.</p></div></div></div>
+                      </div>
+                      <div data-state="closed" data-orientation="vertical" class="border-b border-zinc-200/80" data-testid="faq-item-7">
+                        <h3 data-orientation="vertical" data-state="closed" class="flex">
+                          <button type="button" aria-controls="radix-_r_f_" aria-expanded="false" data-state="closed" data-orientation="vertical" id="radix-_r_e_" class="flex flex-1 items-center justify-between transition-all  font-display text-lg sm:text-xl font-medium tracking-tight text-left hover:no-underline py-6 group" data-radix-collection-item="">
+                            Will it slow down my Mac?<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" aria-hidden="true">
+                              <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                          </button>
+                        </h3>
+                        <div data-state="closed" id="radix-_r_f_" hidden="" role="region" aria-labelledby="radix-_r_e_" data-orientation="vertical" class="accordion-grid data-[state=open]:grid-open data-[state=closed]:grid-closed"><div><div class="pb-4 pt-0 overflow-hidden"><p class="text-[#52525B] font-body leading-relaxed">No. Xync is built natively in Swift and SwiftUI — it uses a fraction of the resources of Electron-based alternatives and idles essentially at zero CPU.</p></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section data-testid="cta-section" class="py-24 sm:py-32">
+              <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="relative rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden bg-[#09090B] text-white px-8 sm:px-16 py-20 sm:py-28">
+                  <div class="absolute -top-20 -left-20 w-[440px] h-[440px] rounded-full bg-[#0A84FF]/30 blur-3xl" aria-hidden="true"></div>
+                  <div class="absolute -bottom-32 -right-20 w-[520px] h-[520px] rounded-full bg-[#0A84FF]/20 blur-3xl" aria-hidden="true"></div>
+                  <div class="relative max-w-3xl">
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/50">
+                      Free · Open Source · Apache 2.0
+                    </p>
+                    <h2 class="font-display mt-4 text-4xl sm:text-5xl lg:text-6xl font-light tracking-tighter leading-[1]">
+                      Your phone deserves<br>a desktop.
+                    </h2>
+                    <p class="mt-6 text-lg text-white/70 max-w-xl leading-relaxed">
+                      Download Xync, drag it into Applications, and bring your
+                      Android into the macOS world. No accounts, no telemetry,
+                      no nonsense.
+                    </p>
+                    <div class="mt-10 flex flex-col sm:flex-row gap-3">
+                      <a data-testid="cta-download-btn" href="assets/downloads/Xync.dmg" download="Xync.dmg" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-white text-[#09090B] font-medium hover:bg-zinc-100 transition-all hover:-translate-y-0.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-to-line w-5 h-5" aria-hidden="true">
+                          <path d="M12 17V3"></path>
+                          <path d="m6 11 6 6 6-6"></path>
+                          <path d="M19 21H5"></path></svg>Download Xync for macOS</a><a data-testid="cta-github-btn" href="https://github.com/adipanchal/Xync" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border border-white/20 text-white font-medium hover:bg-white/5 transition-all hover:-translate-y-0.5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-github w-5 h-5" aria-hidden="true">
+                          <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+                          <path d="M9 18c-4.51 2-5-2-7-2"></path></svg>Star on GitHub</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </main>
+          <footer data-testid="site-footer" class="relative overflow-hidden border-t border-zinc-200/70 bg-[#FAFAFA]">
+            <div aria-hidden="true" class="absolute inset-x-0 -bottom-16 sm:-bottom-24 text-center pointer-events-none select-none">
+              <span class="font-display text-[18vw] leading-none font-light text-zinc-200/60 tracking-tighter">Xync</span>
+            </div>
+            <div class="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20 sm:py-24">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
+                <div class="md:col-span-5">
+                  <div class="flex items-center gap-2.5">
+                    <img alt="Xync" class="w-10 h-10 rounded-[10px] shadow-sm" src="https://github.com/adipanchal/Xync/raw/main/xync/Assets.xcassets/AppIcon.appiconset/mac_128.png"><span class="font-display text-2xl font-medium tracking-tight">Xync</span>
+                  </div>
+                  <p class="mt-5 text-[#52525B] max-w-sm leading-relaxed">
+                    Mirror, control, and manage your Android devices wirelessly
+                    from your Mac. A native macOS app powered by<span style="display: contents">
+                    </span><a href="https://github.com/Genymobile/scrcpy" target="_blank" rel="noopener noreferrer" class="text-[#09090B] underline underline-offset-2 hover:text-[#0A84FF]">scrcpy</a><span style="display: contents"> </span>&amp; adb.
+                  </p>
+                </div>
+                <div class="md:col-span-2">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#A1A1AA]">
+                    Product
+                  </p>
+                  <ul class="mt-4 space-y-3 text-sm">
+                    <li>
+                      <a data-testid="footer-features" href="#features" class="text-[#52525B] hover:text-[#09090B] transition-colors">Features</a>
+                    </li>
+                    <li>
+                      <a data-testid="footer-screenshots" href="#screenshots" class="text-[#52525B] hover:text-[#09090B] transition-colors">Screenshots</a>
+                    </li>
+                    <li>
+                      <a data-testid="footer-install" href="#install" class="text-[#52525B] hover:text-[#09090B] transition-colors">Install</a>
+                    </li>
+                    <li>
+                      <a data-testid="footer-faq" href="#faq" class="text-[#52525B] hover:text-[#09090B] transition-colors">FAQ</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="md:col-span-2">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#A1A1AA]">
+                    Resources
+                  </p>
+                  <ul class="mt-4 space-y-3 text-sm">
+                    <li>
+                      <a data-testid="footer-releases" href="assets/downloads/Xync.dmg" download="Xync.dmg" target="_blank" rel="noopener noreferrer" class="text-[#52525B] hover:text-[#09090B] transition-colors">Releases</a>
+                    </li>
+                    <li>
+                      <a data-testid="footer-license" href="https://github.com/adipanchal/Xync/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="text-[#52525B] hover:text-[#09090B] transition-colors">License</a>
+                    </li>
+                    <li>
+                      <a data-testid="footer-github" href="https://github.com/adipanchal/Xync" target="_blank" rel="noopener noreferrer" class="text-[#52525B] hover:text-[#09090B] transition-colors">GitHub</a>
+                    </li>
+                    <li>
+                      <a data-testid="footer-scrcpy" href="https://github.com/Genymobile/scrcpy" target="_blank" rel="noopener noreferrer" class="text-[#52525B] hover:text-[#09090B] transition-colors">scrcpy</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="md:col-span-3">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em] text-[#A1A1AA]">
+                    Creator
+                  </p>
+                  <p class="mt-4 text-[#52525B] text-sm leading-relaxed">
+                    Crafted with care by<span style="display: contents"> </span><a href="https://github.com/adipanchal" target="_blank" rel="noopener noreferrer" class="text-[#09090B] font-medium hover:text-[#0A84FF]">Aditya Panchal</a>.
+                  </p>
+                  <a data-testid="footer-star-btn" href="https://github.com/adipanchal/Xync" target="_blank" rel="noopener noreferrer" class="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 bg-white text-sm font-medium hover:bg-zinc-50 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-github w-4 h-4" aria-hidden="true">
+                      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+                      <path d="M9 18c-4.51 2-5-2-7-2"></path></svg>Star on GitHub</a>
+                </div>
+              </div>
+              <div class="mt-16 pt-8 border-t border-zinc-200/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <p class="text-sm text-[#A1A1AA]">
+                  © 2026 Aditya Panchal. Licensed under Apache 2.0.
+                </p>
+                <p class="text-sm text-[#A1A1AA] inline-flex items-center gap-1.5">
+                  Made with
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart w-3.5 h-3.5 text-[#0A84FF]" aria-hidden="true">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+                  </svg>
+                  for the Android-on-Mac community.
+                </p>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'9ff4185d89e474e9',t:'MTc3OTM3MTg5OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+    <iframe height="1" width="1" style="
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        border-width: medium;
+        border-style: none;
+        border-color: currentcolor;
+        border-image: initial;
+        visibility: hidden;
+      "></iframe>
+    <script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;7f7b0fd8732c4326aae4b9d58d5c514a&quot;,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+
+    <script>
+      // Header blur on scroll
+      window.addEventListener('scroll', () => {
+        const header = document.querySelector('header[data-testid="site-header"]');
+        if (header) {
+          if (window.scrollY > 20) {
+            header.classList.remove('bg-transparent', 'border-transparent');
+            header.classList.add('bg-white/70', 'backdrop-blur-md', 'border-zinc-200');
+          } else {
+            header.classList.remove('bg-white/70', 'backdrop-blur-md', 'border-zinc-200');
+            header.classList.add('bg-transparent', 'border-transparent');
+          }
+        }
+      });
+    </script>
+  
+
+
+
+
+<script>
+document.querySelectorAll('div[data-testid^="faq-item-"]').forEach(item => {
+  const btn = item.querySelector('button');
+  const region = item.querySelector('div[role="region"]');
+  const h3 = item.querySelector('h3');
+  
+  if (btn && region) {
+    btn.addEventListener('click', () => {
+      const isClosed = btn.getAttribute('data-state') === 'closed';
+      const newState = isClosed ? 'open' : 'closed';
+      
+      // Implement Accordion 'single' behavior (close others)
+      document.querySelectorAll('div[data-testid^="faq-item-"]').forEach(otherItem => {
+         if (otherItem !== item) {
+             otherItem.setAttribute('data-state', 'closed');
+             otherItem.querySelector('button').setAttribute('data-state', 'closed');
+             otherItem.querySelector('button').setAttribute('aria-expanded', 'false');
+             otherItem.querySelector('h3').setAttribute('data-state', 'closed');
+             otherItem.querySelector('div[role="region"]').setAttribute('data-state', 'closed');
+         }
+      });
+      
+      btn.setAttribute('data-state', newState);
+      btn.setAttribute('aria-expanded', isClosed ? 'true' : 'false');
+      h3.setAttribute('data-state', newState);
+      item.setAttribute('data-state', newState);
+      region.setAttribute('data-state', newState);
+      region.removeAttribute('hidden');
+    });
+  }
+});
+</script>
+</body></html>
