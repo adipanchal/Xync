@@ -219,9 +219,16 @@ struct ConnectionWizardView: View {
         }
         
         DispatchQueue.global().async {
+            // Explicitly disconnect the IP first, as ADB can get confused if we previously removed the device
+            // but ADB still thinks it's connected (or offline).
+            _ = ShellManager.shared.adbDisconnect(serial: ip)
+            
+            // Ping the device to wake up its WiFi chip and ARP cache
+            _ = ShellManager.shared.run("ping -c 1 -t 2 \(ip)")
+            
             let output = ShellManager.shared.adbConnect(ip: ip)
             DispatchQueue.main.async {
-                log += "> adb connect \(ip):5555\n\(output)\n"
+                self.log += "> adb connect \(ip):5555\n\(output)\n"
                 isLoading = false
                 
                 if output.localizedCaseInsensitiveContains("connected") {
@@ -229,8 +236,15 @@ struct ConnectionWizardView: View {
                      DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                          onComplete()
                      }
-                } else if output.localizedCaseInsensitiveContains("no route to host") || output.localizedCaseInsensitiveContains("failed to connect") {
-                    log += "FAILED: \(output)\nAttempting to reset ADB server and retry...\n"
+                } else if output.localizedCaseInsensitiveContains("no route to host") {
+                    self.log += "FAILED: \(output)\n"
+                    self.log += "⚠️ 'No route to host' means your phone's Wi-Fi went to sleep or dropped the connection to save battery after being disconnected.\n"
+                    self.log += "👉 PLEASE WAKE UP YOUR PHONE SCREEN and unlock it, then we will retry...\n"
+                    
+                    self.retryWithReset(ip: ip)
+                    
+                } else if output.localizedCaseInsensitiveContains("failed to connect") {
+                    self.log += "FAILED: \(output)\nAttempting to reset ADB server and retry...\n"
                     
                     // Auto-retry with reset
                     self.retryWithReset(ip: ip)
@@ -255,6 +269,13 @@ struct ConnectionWizardView: View {
     
     func retryWithReset(ip: String) {
         DispatchQueue.global().async {
+            // Forcefully restart ADB server to clear deeply wedged sockets and 'No route to host'
+            ShellManager.shared.restartAdbServer()
+            Thread.sleep(forTimeInterval: 2.0)
+            DispatchQueue.main.async {
+                self.log += "> ADB Server Restarted to clear stuck sockets.\n"
+            }
+            
             // Try to re-enable TCP/IP if USB is still connected
             let devices = ShellManager.shared.listDevices()
             let usbDevice = devices.first { !$0.isWireless && $0.state == "device" }
@@ -267,27 +288,42 @@ struct ConnectionWizardView: View {
                 DispatchQueue.main.async {
                     self.log += "> adb -s \(usb.serial) tcpip 5555\n\(tcpResult)\n"
                 }
-                // Give the phone time to switch to TCP/IP mode
-                Thread.sleep(forTimeInterval: 2.0)
-            } else {
-                // No USB device, just restart ADB server
-                ShellManager.shared.restartAdbServer()
-                Thread.sleep(forTimeInterval: 2.0)
-                DispatchQueue.main.async {
-                    self.log += "> ADB Restarted.\n"
-                }
+                // Give the phone more time to switch to TCP/IP mode and reconnect to WiFi
+                Thread.sleep(forTimeInterval: 4.0)
             }
             
             DispatchQueue.main.async {
                 self.log += "Retrying connection...\n"
             }
             
-            let output = ShellManager.shared.adbConnect(ip: ip)
+            var output = ""
+            var success = false
+            
+            // Try connecting up to 3 times
+            for attempt in 1...3 {
+                // Explicitly disconnect before retry
+                _ = ShellManager.shared.adbDisconnect(serial: ip)
+                
+                // Ping to keep ARP awake
+                _ = ShellManager.shared.run("ping -c 1 -t 1 \(ip)")
+                
+                output = ShellManager.shared.adbConnect(ip: ip)
+                DispatchQueue.main.async {
+                    self.log += "> adb connect \(ip):5555 (Attempt \(attempt))\n\(output)\n"
+                }
+                
+                if output.localizedCaseInsensitiveContains("connected") && !output.localizedCaseInsensitiveContains("failed") {
+                    success = true
+                    break
+                }
+                
+                if attempt < 3 {
+                    Thread.sleep(forTimeInterval: 2.0)
+                }
+            }
             
             DispatchQueue.main.async {
-                self.log += "> adb connect \(ip):5555\n\(output)\n"
-                
-                if output.localizedCaseInsensitiveContains("connected") {
+                if success {
                      self.log += "SUCCESS! Device connected wirelessly.\nYou can now unplug USB and close this wizard.\n"
                      DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                          self.onComplete()
@@ -296,7 +332,8 @@ struct ConnectionWizardView: View {
                     self.log += "Still failing. Troubleshooting:\n"
                     self.log += "• Keep USB plugged in and go Back to Step 1\n"
                     self.log += "• Ensure phone and Mac are on the same WiFi\n"
-                    self.log += "• Check if IP address is correct\n"
+                    self.log += "• Check if IP address is correct (it might have changed)\n"
+                    self.log += "• Wake up your phone screen\n"
                 }
             }
         }

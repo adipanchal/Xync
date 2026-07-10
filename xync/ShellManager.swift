@@ -38,6 +38,7 @@ class ShellManager: ObservableObject {
     
     private let knownDevicesKey = "KnownWirelessDevices"
     private let knownDeviceNamesKey = "KnownDeviceNames"
+    private var lastAutoConnectAttempt: [String: Date] = [:]
     
     // Save a successful wireless connection
     func saveKnownDevice(serial: String, model: String, marketName: String = "") {
@@ -71,6 +72,9 @@ class ShellManager: ObservableObject {
         var names = getKnownDeviceNamesDict()
         names.removeValue(forKey: serial)
         UserDefaults.standard.set(names, forKey: knownDeviceNamesKey)
+        
+        // Forcefully purge any offline sockets to prevent them from showing up in listDevices
+        _ = run("'\(adbPath)' reconnect offline")
         
         print("🗑️ Forgot device: \(serial)")
     }
@@ -207,6 +211,52 @@ class ShellManager: ObservableObject {
             if !foundSerials.contains(serial) {
                 let savedName = knownNames[serial] ?? ""
                 currentDevices.append(Device(id: serial, serial: serial, state: "disconnected", model: model, marketName: savedName))
+            }
+        }
+        
+        // Auto-Reconnect Logic
+        if UserDefaults.standard.bool(forKey: "autoConnectWireless") {
+            let now = Date()
+            let known = getKnownDevicesDict()
+            for device in currentDevices where device.isWireless && device.state != "device" {
+                // CRITICAL FIX: Only auto-connect to devices that the user has explicitly saved!
+                // Otherwise this races with the Connection Wizard for forgotten devices.
+                guard known[device.serial] != nil || known[device.serial.components(separatedBy: ":").first ?? ""] != nil else {
+                    continue
+                }
+                
+                if let lastAttempt = lastAutoConnectAttempt[device.serial], now.timeIntervalSince(lastAttempt) < 15 {
+                    continue // Skip if we tried in the last 15 seconds
+                }
+                lastAutoConnectAttempt[device.serial] = now
+                
+                let ip = device.serial.components(separatedBy: ":").first ?? device.serial
+                DispatchQueue.global(qos: .background).async { [weak self] in
+                    // Aggressively attempt to wake offline devices
+                    _ = self?.run("'\(self?.adbPath ?? "")' reconnect offline")
+                    
+                    // Disconnect both formats in case ADB is confused
+                    _ = self?.adbDisconnect(serial: device.serial)
+                    if device.serial != ip {
+                        _ = self?.adbDisconnect(serial: ip)
+                    }
+                    Thread.sleep(forTimeInterval: 0.5)
+                    
+                    // Try reconnecting to the exact serial (which includes the custom port)
+                    var result = self?.adbConnect(ip: device.serial)
+                    
+                    // Fallback to 5555 if the custom port fails (in case device was restarted and defaulted to 5555)
+                    if let res = result, (res.contains("failed") || res.contains("cannot connect")), device.serial != ip, !device.serial.hasSuffix(":5555") {
+                        result = self?.adbConnect(ip: ip)
+                    }
+                    
+                    if let res = result, res.contains("connected") && !res.contains("failed") {
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: NSNotification.Name("RefreshDevices"), object: nil)
+                        }
+                        print("✅ Auto-connected to \(device.serial)")
+                    }
+                }
             }
         }
         

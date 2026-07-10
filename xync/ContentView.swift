@@ -218,6 +218,15 @@ struct ContentView: View {
                         }
                     }
                     .id(selectedTab)
+                    .overlay(alignment: .bottom) {
+                        // Floating Now Playing bar on Dashboard
+                        if selectedTab == .dashboard {
+                            let connected = filteredDevices.filter { $0.state == "device" }
+                            if let activeDevice = connected.first {
+                                NowPlayingBar(device: activeDevice)
+                            }
+                        }
+                    }
                     
                     if selectedTab == .files {
                         HStack(spacing: 6) {
@@ -304,7 +313,7 @@ struct ContentView: View {
         switch selectedTab {
         case .dashboard: return "Dashboard"
         case .files: return "File Explorer"
-        case .settings: return "Dashboard"
+        case .settings: return "Settings"
         }
     }
     
@@ -345,21 +354,50 @@ struct ContentView: View {
                 print("🔌 USB device, using serial: \(serial)")
             }
             
-            // Disconnect first
+            // Disconnect first (both formats)
             print("❌ Disconnecting...")
             let disconnectResult = ShellManager.shared.adbDisconnect(serial: serial)
+            if serial != ip {
+                _ = ShellManager.shared.adbDisconnect(serial: ip)
+            }
+            _ = ShellManager.shared.run("'\(ShellManager.shared.adbPath)' reconnect offline")
             print("Disconnect result: \(disconnectResult)")
             
             // Wait a moment
             Thread.sleep(forTimeInterval: 0.5)
             
             // Reconnect
-            print("✅ Connecting to \(ip)...")
-            let result = ShellManager.shared.adbConnect(ip: ip)
-            print("Connect result: \(result)")
+            print("✅ Connecting to \(serial)...")
+            var result = ShellManager.shared.adbConnect(ip: serial)
+            if (result.contains("failed") || result.contains("cannot connect")) && serial != ip && !serial.hasSuffix(":5555") {
+                print("✅ Fallback connecting to \(ip):5555...")
+                result = ShellManager.shared.adbConnect(ip: ip)
+            }
             
-            // Check if connection was successful
-            let success = result.contains("connected") && !result.contains("failed")
+            var success = result.contains("connected") && !result.contains("failed")
+            
+            // If it failed, the ADB server might be deeply stuck (e.g., caching 'No route to host')
+            if !success {
+                print("⚠️ Connection failed. Restarting ADB server to clear stuck sockets...")
+                ShellManager.shared.restartAdbServer()
+                Thread.sleep(forTimeInterval: 2.0)
+                
+                // Re-enable TCP/IP for USB devices if they were connected
+                let currentDevices = ShellManager.shared.listDevices()
+                if let usbDevice = currentDevices.first(where: { !$0.isWireless && $0.state == "device" }) {
+                    _ = ShellManager.shared.adbTcpIp(serial: usbDevice.serial)
+                    Thread.sleep(forTimeInterval: 2.0)
+                }
+                
+                print("✅ Retrying connection to \(serial) after server restart...")
+                result = ShellManager.shared.adbConnect(ip: serial)
+                if (result.contains("failed") || result.contains("cannot connect")) && serial != ip && !serial.hasSuffix(":5555") {
+                    result = ShellManager.shared.adbConnect(ip: ip)
+                }
+                success = result.contains("connected") && !result.contains("failed")
+            }
+            
+            print("Connect final result: \(result)")
             
             // Refresh device list
             Thread.sleep(forTimeInterval: 1.0)

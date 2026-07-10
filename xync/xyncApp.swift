@@ -248,6 +248,8 @@ struct ConnectedDeviceSection: View {
     @AppStorage("turnScreenOff") private var turnScreenOff = false
     @AppStorage("alwaysOnTop") private var alwaysOnTop = false
     @AppStorage("rotation") private var rotation = 0
+    
+    @ObservedObject var mediaManager = MediaManager.shared
 
     var body: some View {
         let name = device.marketName.isEmpty ? (device.model == "Unknown" ? device.serial : device.model) : device.marketName
@@ -337,6 +339,22 @@ struct ConnectedDeviceSection: View {
             }
             .padding(.horizontal, 10)
             .padding(.bottom, 4)
+            
+            if mediaManager.currentMediaState.isPlaying || !mediaManager.currentMediaState.title.isEmpty {
+                Divider()
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                
+                MediaControlView(device: device, isCompact: true)
+                    .padding(.horizontal, 6)
+                    .padding(.bottom, 6)
+            }
+        }
+        .onAppear {
+            mediaManager.startPolling(serial: device.serial, subscriber: "ConnectedDeviceSection")
+        }
+        .onDisappear {
+            mediaManager.stopPolling(subscriber: "ConnectedDeviceSection")
         }
     }
 
@@ -378,8 +396,7 @@ struct ActionButton: View {
                 Text(title)
                     .font(.system(size: 10, weight: .bold))
                     .foregroundColor(.primary)
-                    .lineLimit(1)
-            }
+                    .lineLimit(1)            }
             .frame(maxWidth: .infinity)
             .contentShape(Rectangle())
         }

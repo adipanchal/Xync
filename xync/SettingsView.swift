@@ -29,6 +29,7 @@ struct SettingsView: View {
 struct GeneralSettingsView: View {
     @AppStorage("showInMenuBar") private var showInMenuBar = false
     @AppStorage("hideFromDock") private var hideFromDock = false
+    @AppStorage("autoConnectWireless") private var autoConnectWireless = false
     
     @AppStorage("dexResolution") private var dexResolution: String = "1920x1080"
     @AppStorage("stayAwake") private var stayAwake = true
@@ -52,6 +53,7 @@ struct GeneralSettingsView: View {
                 Toggle("Show in Menu Bar", isOn: $showInMenuBar)
                 Toggle("Hide from Dock (Menu Bar only)", isOn: $hideFromDock)
                     .disabled(!showInMenuBar)
+                Toggle("Auto-connect saved wireless devices", isOn: $autoConnectWireless)
             }
             
             Section("Mirroring Settings") {
