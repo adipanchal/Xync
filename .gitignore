@@ -83,5 +83,4 @@ iOSInjectionProject/
 
 # Build artifacts
 *.app
-*.dmg
 create_dmg.sh
