@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .bento-card {
+    @apply relative flex flex-col overflow-hidden bg-white rounded-3xl border border-zinc-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)];
+  }
+  .bento-media {
+    @apply rounded-2xl overflow-hidden border border-zinc-100;
+  }
+
+  .install-step {
+    @apply relative grid grid-cols-[2.75rem_1fr] sm:grid-cols-[5.5rem_auto_1fr] gap-x-5 sm:gap-x-6 gap-y-4 items-start p-6 sm:p-8 rounded-3xl border border-zinc-200/60 bg-white hover:bg-[#FAFAFA] transition-colors;
+  }
+  .install-num {
+    @apply font-display text-4xl sm:text-6xl font-light text-[#0A84FF]/25 group-hover:text-[#0A84FF]/40 transition-colors leading-none;
+  }
+  .install-icon {
+    @apply hidden sm:inline-flex items-center justify-center w-10 h-10 mt-1 rounded-xl bg-[#0A84FF]/10 text-[#0A84FF];
+  }
+
+  .faq-button {
+    @apply flex w-full items-center justify-between gap-6 py-6 text-left font-display text-lg sm:text-xl font-medium tracking-tight text-[#09090B] hover:text-[#0A84FF] transition-colors;
+  }
+  .faq-chevron {
+    @apply h-5 w-5 shrink-0 text-[#A1A1AA] transition-transform duration-200 group-data-[state=open]:rotate-180 group-data-[state=open]:text-[#0A84FF];
+  }
+}
+
 @layer utilities {
   .accordion-grid {
     display: grid;
